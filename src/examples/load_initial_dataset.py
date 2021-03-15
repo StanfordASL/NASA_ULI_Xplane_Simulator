@@ -26,12 +26,22 @@ NUM_PRINT = 15
 # never save this to the main git repo
 SCRATCH_DIR = BASE_DIR + '/scratch/'
 
+UTILS_DIR = BASE_DIR + '/src/utils/'
+sys.path.append(UTILS_DIR)
+
+from textfile_utils import *
 
 if __name__ == '__main__':
 
+    # create a temp dir to visualize a few images
+    visualization_dir = remove_and_create_dir(SCRATCH_DIR + '/viz/')
+
+    # where the final dataloader will be saved
+    DATALOADER_DIR = remove_and_create_dir(SCRATCH_DIR + '/dataloader/')
+
     MAX_FILES = np.inf
 
-    # where csvs are 
+    # where original XPLANE images are stored 
     data_dir = DATA_DIR + '/test_dataset/'
    
     # resize to 224 x 224 x 3 for EfficientNets
@@ -42,8 +52,11 @@ if __name__ == '__main__':
                                    transforms.Normalize([0.485, 0.456, 0.406],
                                                         [0.229, 0.224, 0.225]),])
 
+    # loop through images and save in a dataloader
     tensor_list = []
     for i in range(num_entries):
+
+        # open images and apply transforms
         print(i)
         fname = data_dir + '/' + str(i) + '.png'
         image = Image.open(fname).convert('RGB')
@@ -52,21 +65,17 @@ if __name__ == '__main__':
 
         tensor_list.append(tensor_image_example)
 
+        # periodically save the images to disk 
         if i % NUM_PRINT == 0:
             plt.imshow(image)
-            plt.savefig(VIZ_DIR + '/' + str(i+1) + '.png')
-      
+            plt.savefig(visualization_dir + '/' + str(i+1) + '.png')
+     
+        # early terminate for debugging
         if i > MAX_FILES:
             break
 
     all_image_tensor = torch.stack(tensor_list)
     print(all_image_tensor.shape)
 
-    timeseries = torch.tensor(df.values).type(torch.float16)
-
-    episode_data = DATALOADER_DIR + '/images_episode_' + str(episode_num) + '.pt'
-    timeseries_data = DATALOADER_DIR + '/timeseries_episode_' + str(episode_num) + '.pt'
-
-    torch.save(all_image_tensor, episode_data)
-    torch.save(timeseries, timeseries_data) 
-
+    image_data = DATALOADER_DIR + '/xplane_images.pt'
+    torch.save(all_image_tensor, image_data)
