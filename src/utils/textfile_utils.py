@@ -9,3 +9,4 @@ def remove_and_create_dir(path):
         os.system("rm -rf " + path)
     os.system("mkdir -p " + path)
 
+    return path
