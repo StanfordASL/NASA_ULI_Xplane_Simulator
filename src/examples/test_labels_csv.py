@@ -1,9 +1,8 @@
 """
     Goal: Visualize images from aircraft camera and load as a pytorch dataloader
 
-    1. load all example png examples as a pytorch dataloader
-    2. save a few images to disk for visualization
-    3. load the corresponding state information in the h5 file
+    load the state information saved as a csv file
+
 """
 
 import sys, os
@@ -44,19 +43,13 @@ if __name__ == '__main__':
     DATALOADER_DIR = SCRATCH_DIR + '/dataloader/'
 
     # where original XPLANE images are stored 
-    data_dir = DATA_DIR + '/test_dataset/'
+    data_dir = DATA_DIR + '/test_dataset_smaller_ims/'
 
-    label_file = data_dir + '/labels.h5'
-    
-    with h5py.File(label_file, "r") as f:
-        # List all groups
-        print("Keys: %s" % f.keys())
-        for i in range(len(f.keys())):
-            a_group_key = list(f.keys())[i]
-            print('key: ', a_group_key)
-            # Get the data
-            data = list(f[a_group_key])
-            print('value: ', data)
+    label_file = data_dir + '/labels.csv'
+   
+    df = pandas.read_csv(label_file, sep=',')
 
+    # df is a dataframe of images and their corresponding state information
 
+    # ['image_filename', 'absolute_time_GMT_seconds', 'relative_time_seconds', 'distance_to_centerline_meters', 'distance_to_centerline_NORMALIZED', 'downtrack_position_meters', 'downtrack_position_NORMALIZED', 'heading_error_degrees', 'heading_error_NORMALIZED', 'period_of_day', 'cloud_type']
 
