@@ -62,6 +62,12 @@ if __name__ == '__main__':
 
     image_list = [x for x in os.listdir(data_dir) if x.endswith('.png')]
 
+    # where the labels for each image (such as distance to centerline) are present
+    label_file = data_dir + '/labels.csv'
+  
+    # dataframe
+    labels_df = pandas.read_csv(label_file, sep=',')
+
     # loop through images and save in a dataloader
     tensor_list = []
     for i, image_name in enumerate(image_list):
@@ -73,12 +79,18 @@ if __name__ == '__main__':
         tensor_image_example = tfms(image)
         print(tensor_image_example.shape)
 
+        # get the corresponding state information (labels) for each image
+        specific_row = labels_df[labels_df['image_filename'] == image_name]
+        dist_centerline_norm = specific_row['distance_to_centerline_NORMALIZED'][0]
+
         tensor_list.append(tensor_image_example)
 
         # periodically save the images to disk 
         if i % NUM_PRINT == 0:
             plt.imshow(image)
             # original image
+            title_str = ' '.join(['Dist Centerline: ', str(dist_centerline_norm)]) 
+            plt.title(title_str)
             plt.savefig(visualization_dir + '/' + str(i) + '.png')
             plt.close()
 
