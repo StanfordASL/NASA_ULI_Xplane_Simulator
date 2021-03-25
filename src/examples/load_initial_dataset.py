@@ -50,7 +50,7 @@ if __name__ == '__main__':
     MAX_FILES = np.inf
 
     # where original XPLANE images are stored 
-    data_dir = DATA_DIR + '/test_dataset/'
+    data_dir = DATA_DIR + '/test_dataset_smaller_ims/'
    
     # resize to 224 x 224 x 3 for EfficientNets
     # prepare image transforms
@@ -64,11 +64,11 @@ if __name__ == '__main__':
 
     # loop through images and save in a dataloader
     tensor_list = []
-    for i in range(len(image_list)):
+    for i, image_name in enumerate(image_list):
 
         # open images and apply transforms
-        print(i)
-        fname = data_dir + '/' + str(i) + '.png'
+        print(i, image_name)
+        fname = data_dir + '/' + str(image_name)
         image = Image.open(fname).convert('RGB')
         tensor_image_example = tfms(image)
         print(tensor_image_example.shape)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
             plt.close()
 
             # resized and normalized image that can be passed to a DNN
-            torchvision.utils.save_image(tensor_image_example, visualization_dir + '/resized_transform_' + str(i) + '.png')
+            torchvision.utils.save_image(tensor_image_example, visualization_dir + '/resized_transform_' + str(image_name))
      
         # early terminate for debugging
         if i > MAX_FILES:
