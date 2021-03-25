@@ -64,12 +64,19 @@ if __name__ == '__main__':
 
     # where the labels for each image (such as distance to centerline) are present
     label_file = data_dir + '/labels.csv'
-  
-    # dataframe
+ 
+    # dataframe of labels
     labels_df = pandas.read_csv(label_file, sep=',')
+    
+    # columns are: 
+    # ['image_filename', 'absolute_time_GMT_seconds', 'relative_time_seconds', 'distance_to_centerline_meters', 'distance_to_centerline_NORMALIZED', 'downtrack_position_meters', 'downtrack_position_NORMALIZED', 'heading_error_degrees', 'heading_error_NORMALIZED', 'period_of_day', 'cloud_type']
 
     # loop through images and save in a dataloader
-    tensor_list = []
+    image_tensor_list = []
+
+    # tensor of targets y:  modify to whatever you want to predict from DNN
+    target_tensor_list = []
+
     for i, image_name in enumerate(image_list):
 
         # open images and apply transforms
@@ -79,11 +86,18 @@ if __name__ == '__main__':
         tensor_image_example = tfms(image)
         print(tensor_image_example.shape)
 
+        # add image
+        image_tensor_list.append(tensor_image_example)
+
         # get the corresponding state information (labels) for each image
         specific_row = labels_df[labels_df['image_filename'] == image_name]
+        # there are many states of interest, you can modify to access which ones you want
         dist_centerline_norm = specific_row['distance_to_centerline_NORMALIZED'].item()
+        # normalized downtrack position
+        downtrack_position_norm = specific_row['downtrack_position_NORMALIZED'].item()
 
-        tensor_list.append(tensor_image_example)
+        # add tensor
+        target_tensor_list.append([dist_centerline_norm, downtrack_position_norm])
 
         # periodically save the images to disk 
         if i % NUM_PRINT == 0:
@@ -101,10 +115,25 @@ if __name__ == '__main__':
         if i > MAX_FILES:
             break
 
+    # first, save image tensors
     # concatenate all image tensors
-    all_image_tensor = torch.stack(tensor_list)
+    all_image_tensor = torch.stack(image_tensor_list)
     print(all_image_tensor.shape)
 
     # save tensors to disk 
-    image_data = DATALOADER_DIR + '/xplane_images.pt'
+    image_data = DATALOADER_DIR + '/images_xplane.pt'
+    # sizes are: 126 images, 3 channels, 224 x 224 each 
+    # torch.Size([126, 3, 224, 224])
     torch.save(all_image_tensor, image_data)
+
+    ###################################
+    # second, save target label tensors
+    target_tensor = torch.tensor(target_tensor_list)
+    print(target_tensor.shape)
+    
+    # size: 126 numbers by 2 targets 
+    # torch.Size([126])
+
+    # save tensors to disk 
+    target_data = DATALOADER_DIR + '/targets_xplane.pt'
+    torch.save(target_tensor, target_data)
