@@ -153,6 +153,8 @@ def setHomeState(client, x, y, theta):
     client.sendDREF("sim/flightmodel/position/psi", 53.7 - theta)
 
     # Place perfectly on the ground
+    # Pause for a bit for it to move
+    time.sleep(0.02)
     curr_agly = client.getDREF("sim/flightmodel/position/y_agl")[0]
     curr_localy = client.getDREF("sim/flightmodel/position/local_y")[0]
     client.sendDREF("sim/flightmodel/position/local_y",
