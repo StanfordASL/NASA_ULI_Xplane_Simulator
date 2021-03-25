@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
         # get the corresponding state information (labels) for each image
         specific_row = labels_df[labels_df['image_filename'] == image_name]
-        dist_centerline_norm = specific_row['distance_to_centerline_NORMALIZED'][0]
+        dist_centerline_norm = specific_row['distance_to_centerline_NORMALIZED'].item()
 
         tensor_list.append(tensor_image_example)
 
