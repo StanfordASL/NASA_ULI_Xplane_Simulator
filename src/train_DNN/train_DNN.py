@@ -111,7 +111,9 @@ if __name__=='__main__':
     # where raw images and csvs are saved
     DATALOADER_DIR = DATA_DIR + '/test_dataset_smaller_ims/'
 
-    train_options = {"epochs": 2,
+    #DATALOADER_DIR = DATA_DIR + '/medium_size_dataset/nominal_conditions_subset/'
+
+    train_options = {"epochs": 20,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      "data_dir": DATALOADER_DIR
