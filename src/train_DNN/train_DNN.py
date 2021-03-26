@@ -4,6 +4,7 @@ import sys, os
 
 from model_taxinet import TaxiNetDNN, freeze_model
 from taxinet_dataloader import *
+from plot_utils import *
 
 # make sure this is a system variable in your bashrc
 NASA_ULI_ROOT_DIR=os.environ['NASA_ULI_ROOT_DIR']
@@ -99,11 +100,17 @@ def train_model(train_options, dataloader_params, val_dataloader_params):
         train_loss.append(total_loss / num_batches)
         #val_loss.append(val_total_loss / val_batches)
         np.savetxt(results_dir + '/train_loss.txt', train_loss)
+       
+
         #np.savetxt('../task_loss/val_loss.txt', val_loss)
+
+    train_plot_file = results_dir + '/train_loss.pdf' 
+    basic_plot_ts(train_loss, train_plot_file, title_str = 'Train Loss')
 
     return train_loss
 
 if __name__=='__main__':
+    print('found device: ', device)
 
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/DNN_train_taxinet/')
@@ -111,9 +118,9 @@ if __name__=='__main__':
     # where raw images and csvs are saved
     DATALOADER_DIR = DATA_DIR + '/test_dataset_smaller_ims/'
 
-    #DATALOADER_DIR = DATA_DIR + '/medium_size_dataset/nominal_conditions_subset/'
+    DATALOADER_DIR = DATA_DIR + '/medium_size_dataset/nominal_conditions_subset/'
 
-    train_options = {"epochs": 20,
+    train_options = {"epochs": 50,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      "data_dir": DATALOADER_DIR
