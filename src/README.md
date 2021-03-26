@@ -65,9 +65,9 @@ To control the aircraft from python, we can use [NASA's X-Plane Connect Plugin](
     ```python
     client.pauseSim(False)
     ```
-After running this command, the aircraft should start to travel down the runway at 5 m/s. After watching it move, pause it again.
-    ```python
-    client.pauseSim(True)
+    After running this command, the aircraft should start to travel down the runway at 5 m/s. After watching it move, pause it again.
+        ```python
+        client.pauseSim(True)
     ```
 6. We can control the aircraft by turning the nosewheel/rudder. The rudder input (fourth argument) should be between -1 and 1. Positive creates a right turn.
     ```python
