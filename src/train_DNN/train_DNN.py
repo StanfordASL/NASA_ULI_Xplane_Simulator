@@ -92,7 +92,7 @@ def train_model(train_options, dataloader_params, val_dataloader_params):
         #            print("Skipping validation batch due to an issue.")
         #model.train()
 
-        torch.save(model, results_dir + "/Epoch_"+str(i+1))
+        #torch.save(model, results_dir + "/Epoch_"+str(i+1))
 
         print("normalized train loss: ", total_loss / num_batches)
         #print("normalized val loss: ", val_total_loss / val_batches)
