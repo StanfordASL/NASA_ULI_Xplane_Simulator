@@ -43,74 +43,74 @@ We are now ready to start calling X-Plane 11 from python!
 To control the aircraft from python, we can use [NASA's X-Plane Connect Plugin](https://github.com/nasa/XPlaneConnect). 
 
 1. Open a terminal, navigate to `NASA_ULI_Xplane_Simulator/src`, and start python.
-```shell script
-python3
-```
+    ```shell script
+    python3
+    ```
 2. Now that you have python open, let's import the functions we will need. The file `xpc3.py` was copied from the [XPlaneConnect repository](https://github.com/nasa/XPlaneConnect). The file `xpc3_helper.py` was written by us to provide some useful functions for the taxiing problem.
-```python
-from xpc3 import *
-from xpc3_helper import *
-```
+    ```python
+    from xpc3 import *
+    from xpc3_helper import *
+    ```
 3. We are now ready to connect to X-Plane 11. Make sure you have X-Plane 11 running and have followed all previous steps before running this line.
-```python
-# Create connection to simulation
-# Simulation must be running and should not be in any settings menus
-client = XPlaneConnect()
-```
+    ```python
+    # Create connection to simulation
+    # Simulation must be running and should not be in any settings menus
+    client = XPlaneConnect()
+    ```
 4. Next, let's reset the simulation. This command will be helpful to run before starting any simulation episodes. It starts the aircraft at the beginning of the runway, in the center, and traveling at 5 m/s. However, the simulation will be paused, so the aircraft will not be moving forward yet.
-```python
-reset(client)
-```
+    ```python
+    reset(client)
+    ```
 5. We can now unpause the simulation.
-```python
-client.pauseSim(False)
-```
+    ```python
+    client.pauseSim(False)
+    ```
 After running this command, the aircraft should start to travel down the runway at 5 m/s. After watching it move, pause it again.
-```python
-client.pauseSim(True)
-```
+    ```python
+    client.pauseSim(True)
+    ```
 6. We can control the aircraft by turning the nosewheel/rudder. The rudder input (fourth argument) should be between -1 and 1. Positive creates a right turn.
-```python
-sendCTRL(client, 0.0, 0.0, 0.5, 0.0)
+    ```python
+    sendCTRL(client, 0.0, 0.0, 0.5, 0.0)
 
-# Unpause the simulation to observe the effect
-client.pauseSim(False)
+    # Unpause the simulation to observe the effect
+    client.pauseSim(False)
 
-# Repause once done observing
-client.pauseSim(True)
-```
+    # Repause once done observing
+    client.pauseSim(True)
+    ```
 7. In addition to controlling the aircraft, we can place it at a specified location on the runway. The runway is 20 meters wide and 2982 meters long.
-```python
-# First let's reset it to the beginning of the runway
-reset(client)
+    ```python
+    # First let's reset it to the beginning of the runway
+    reset(client)
 
-# Next, let's place it 5 meters ahead of our current location 
-# Use the setHomeState(client, x, y, theta function)
-# x is the distance from the centerline in meters (for runway -10 < x < 10, left is positive)
-# y is the distance down the runway in meters
-# theta is the angle that the aircraft faces measured from facing straight down the runway
-setHomeState(client, 0.0, 5.0, 0.0)
+    # Next, let's place it 5 meters ahead of our current location 
+    # Use the setHomeState(client, x, y, theta function)
+    # x is the distance from the centerline in meters (for runway -10 < x < 10, left is positive)
+    # y is the distance down the runway in meters
+    # theta is the angle that the aircraft faces measured from facing straight down the runway
+    setHomeState(client, 0.0, 5.0, 0.0)
 
-# Let's move it to the left 4 meters
-setHomeState(client, 4.0, 5.0, 0.0)
+    # Let's move it to the left 4 meters
+    setHomeState(client, 4.0, 5.0, 0.0)
 
-# Rotate it counterclockwise 10 degrees
-setHomeState(client, 4.0, 5.0, 10.0)
+    # Rotate it counterclockwise 10 degrees
+    setHomeState(client, 4.0, 5.0, 10.0)
 
-# Move it to the end of the runway
-setHomeState(client, 0.0, 2982.0, 0.0)
-```
+    # Move it to the end of the runway
+    setHomeState(client, 0.0, 2982.0, 0.0)
+    ```
 8. X-Plane Connect provides a way to programmatically edit the [DataRefs](https://developer.x-plane.com/datarefs/) that control the simulation. We can easily get the value of a particular DataRef. For example, let's get the time of day (GMT) in seconds.
-```python
-# Returns a tuple, so index the first entry to get the number back
-client.getDREF("sim/time/zulu_time_sec")[0]
-```
+    ```python
+    # Returns a tuple, so index the first entry to get the number back
+    client.getDREF("sim/time/zulu_time_sec")[0]
+    ```
 9. We can also set the value of a DataRef. Let's set the time to 11:00PM local time.
-```python
-client.sendDREF("sim/time/zulu_time_sec", 23 * 3600 + 8 * 3600)
-```
-It should be nighttime now.
+    ```python
+    client.sendDREF("sim/time/zulu_time_sec", 23 * 3600 + 8 * 3600)
+    ```
+    It should be nighttime now.
 
-DataRefs are simulation variables, and there are many many of them controlling everything from weather to aircraft position, speed, orientation, parking break, and more. They are summarized [here](https://developer.x-plane.com/datarefs/). Note that not all DataRefs can be written. Some DataRefs are calculated at each time step as a function of other DataRefs, so writing to them will have no effect because they will just be rewritten at the next time step.
+    DataRefs are simulation variables, and there are many many of them controlling everything from weather to aircraft position, speed, orientation, parking break, and more. They are summarized [here](https://developer.x-plane.com/datarefs/). Note that not all DataRefs can be written. Some DataRefs are calculated at each time step as a function of other DataRefs, so writing to them will have no effect because they will just be rewritten at the next time step.
 
 This concludes the set up and tutorial! Check out the folders in this repo that use these functions to collect data from X-Plane 11 and simulate controllers.

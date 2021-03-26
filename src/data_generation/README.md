@@ -43,6 +43,6 @@ python3 sinusoidal.py
 python3 data_recorder.py
 ```
 
-5. Quickly close out of both terminals so that they are not in the way of the data recorder.
+5. Quickly close out of both terminals so that they are not in the way of the data recorder. There should be a five second buffer since starting the `sinusoidal.py script`.
 
-6. Once all episodes are finished, the data will be saved to the folder you specified in `settings.py`
+6. Once all episodes are finished, the data will be saved to the folder you specified in `settings.py`.
