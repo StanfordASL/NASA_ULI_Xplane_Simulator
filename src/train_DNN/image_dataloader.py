@@ -91,6 +91,8 @@ class TaxiNetDataset(torch.utils.data.Dataset):
 
 if __name__ == '__main__':
 
+    print_mode = False
+
     IMAGE_WIDTH = 224
     IMAGE_HEIGHT = 224
 
@@ -117,6 +119,6 @@ if __name__ == '__main__':
         print('target tensor: ', target_tensor.shape)
         print(' ')
 
-        if i % NUM_PRINT == 0:
+        if (i % NUM_PRINT == 0) and print_mode:
             torchvision.utils.save_image(image_batch, visualization_dir + '/resized_transform_' + str(i) + '.png')
 
