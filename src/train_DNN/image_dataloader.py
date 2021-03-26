@@ -99,6 +99,7 @@ if __name__ == '__main__':
 
     # where original XPLANE images are stored 
     DATALOADER_DIR = DATA_DIR + '/test_dataset_smaller_ims/'
+    DATALOADER_DIR = DATA_DIR + '/medium_size_dataset/nominal_conditions_subset/'
 
     taxinet_dataset = TaxiNetDataset(DATALOADER_DIR)
 
@@ -108,7 +109,7 @@ if __name__ == '__main__':
 
     taxinet_dataloader = DataLoader(taxinet_dataset, **params)
 
-    NUM_PRINT = 1
+    NUM_PRINT = 5
 
     for i, (image_batch, target_tensor) in enumerate(taxinet_dataloader):
         print(' ')
