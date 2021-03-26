@@ -3,7 +3,7 @@ import os
 
 # make sure this is a system variable in your bashrc
 NASA_ULI_ROOT_DIR=os.environ['NASA_ULI_ROOT_DIR']
-XPC3_DIR = NASA_ULI_ROOT_DIR + '/data/'
+XPC3_DIR = NASA_ULI_ROOT_DIR + '/src/'
 sys.path.append(XPC3_DIR)
 
 import numpy as np

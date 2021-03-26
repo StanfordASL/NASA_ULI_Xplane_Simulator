@@ -9,7 +9,7 @@ The X-Camera plugin can be downloaded [here](https://www.stickandrudderstudios.c
 
 ## Step 3: Download the 208B Grand Caravan Aircraft
 1. The model can be purchased and downloaded [here](https://store.x-plane.org/C208B-GRAND-CARAVAN-HD-SERIES-XP11_p_668.html). 
-2. Once downloaded, you should have a folder called `Carenado C208B_Grand_Caravan_v1.1`. Navigate to the `X-Plane 11` folder on your computer. From there, navigate to `Aircraft/Extra Aircraft` and drag the `Carenado C208B_Grand_Caravan_v1.1` to this location.
+2. Once downloaded, you should have a folder called `Carenado C208B_Grand_Caravan_v1.1`. Navigate to the `X-Plane 11` folder on your computer. From there, navigate to `Aircraft/Extra Aircraft` and drag the `Carenado C208B_Grand_Caravan_v1.1` folder to this location.
 
 ## Step 4: Download X-Plane Connect
 To control the aircraft from python, we need to install [NASA's X-Plane Connect Plugin](https://github.com/nasa/XPlaneConnect).
@@ -51,7 +51,7 @@ python3
 from xpc3 import *
 from xpc3_helper import *
 ```
-3. We are now ready to connect it to X-Plane 11. Make sure you have X-Plane 11 running and have followed all previous steps before running this line.
+3. We are now ready to connect to X-Plane 11. Make sure you have X-Plane 11 running and have followed all previous steps before running this line.
 ```python
 # Create connection to simulation
 # Simulation must be running and should not be in any settings menus

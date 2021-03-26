@@ -23,10 +23,10 @@ CLOUD_COVER = 0
 # smallset - runs 5 sinusoidal trajectories centered at zero crosstrack error with 
 #            varying amplitude and frequency (ideal for collecting OoD data)
 # largeset - runs 20 sinusoidal trajectories with varying amplitude and frequency
-#            and centered at the different crosstrack errors
+#            and centered at different crosstrack errors
 # the last five trajectories of the largeset have the same parameter settings as
 # the largeset
-case = 'largeset'
+case = 'example'
 
 # Frequency with which to record data
 # NOTE: this is approximate due to computational overhead
