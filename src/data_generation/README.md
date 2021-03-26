@@ -9,6 +9,7 @@ This tutorial assumes that you are already followed the steps [here](..) and tha
 1. Modify the settings file based on your desired simulation parameters
 
     Modifiable parameters:
+    
     `OUT_DIR`
     * Directory to save output data
     * NOTE: CSV file and images will be overwritten if already exists in that directory, but extra images (for time steps that do not occur in the new episodes) will not be deleted
@@ -43,6 +44,6 @@ python3 sinusoidal.py
 python3 data_recorder.py
 ```
 
-5. Quickly close out of both terminals so that they are not in the way of the data recorder. There should be a five second buffer since starting the `sinusoidal.py script`.
+5. Quickly close out of both terminals so that they are not in the way of the data recorder. There should be a five second buffer since starting the `sinusoidal.py` script.
 
 6. Once all episodes are finished, the data will be saved to the folder you specified in `settings.py`.
