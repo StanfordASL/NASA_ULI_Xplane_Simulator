@@ -105,19 +105,19 @@ if __name__=='__main__':
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/DNN_train_taxinet/')
 
     # where raw images and csvs are saved
-    BASE_DATALOADER_DIR = DATA_DIR + '/medium_size_dataset/nominal_conditions_subset_'
+    BASE_DATALOADER_DIR = DATA_DIR + 'nominal_conditions_'
 
     train_dir = BASE_DATALOADER_DIR + 'train/'
     val_dir = BASE_DATALOADER_DIR + 'val/'
 
-    train_options = {"epochs": 3,
+    train_options = {"epochs": 50,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      "train_dir": train_dir, 
                      "val_dir": val_dir
                      }
 
-    dataloader_params = {'batch_size': 32,
+    dataloader_params = {'batch_size': 512,
                          'shuffle': True,
                          'num_workers': 12,
                          'drop_last': False}
