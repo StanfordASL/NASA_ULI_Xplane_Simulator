@@ -170,7 +170,7 @@ if __name__=='__main__':
     train_dir = BASE_DATALOADER_DIR + '/'
     val_dir = BASE_DATALOADER_DIR + '_val/'
 
-    train_options = {"epochs": 3,
+    train_options = {"epochs": 15,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      "train_dir": train_dir, 
