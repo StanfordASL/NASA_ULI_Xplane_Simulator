@@ -24,7 +24,7 @@ sys.path.append(UTILS_DIR)
 from textfile_utils import *
 
 
-def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, num_epochs=25, log_every=100):
+def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, results_dir, num_epochs=25, log_every=100):
     """
     Trains a model on datatsets['train'] using criterion(model(inputs), labels) as the loss.
     Returns the model with lowest loss on datasets['val']
@@ -214,7 +214,7 @@ if __name__=='__main__':
     dataloaders['val'] = val_loader
 
     # train the DNN
-    model = train_model(model, datasets, dataloaders, loss_func, optimizer, device, num_epochs=train_options['epochs'], log_every=100)
+    model = train_model(model, datasets, dataloaders, loss_func, optimizer, device, results_dir, num_epochs=train_options['epochs'], log_every=100)
 
     # save the best model to the directory
     torch.save(model.state_dict(), results_dir + "/best_model.pt")
