@@ -49,7 +49,10 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, num_e
     val_loss = np.nan
     
     n_tr_batches_seen = 0
-    
+   
+    train_loss = []
+    val_loss = []
+
     with tqdm(total=num_epochs, position=0) as pbar:
         pbar2 = tqdm(total=dataset_sizes['train'], position=1)
         for epoch in range(num_epochs):
@@ -118,10 +121,12 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, num_e
                 
                 if phase == 'train':
                     tr_loss = epoch_loss
-                    
+                    train_loss.append(tr_loss)
+
                 if phase == 'val':
                     val_loss = epoch_loss
                     writer.add_scalar('loss/val', val_loss, n_tr_batches_seen)
+                    val_loss.append(val_loss)
 
                 pbar.set_postfix(tr_loss=tr_loss, val_loss=val_loss)
 
@@ -140,6 +145,10 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, num_e
     
     writer.flush()
 
+    # plot the results to a file
+    plot_file = results_dir + '/loss.pdf' 
+    basic_plot_ts(train_loss, val_loss, plot_file, legend = ['Train Loss', 'Val Loss'])
+
     # load best model weights
     model.load_state_dict(best_model_wts)
     return model
@@ -156,12 +165,12 @@ if __name__=='__main__':
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/DNN_train_taxinet/')
 
     # where raw images and csvs are saved
-    BASE_DATALOADER_DIR = DATA_DIR + 'nominal_conditions_'
+    BASE_DATALOADER_DIR = DATA_DIR + 'nominal_conditions/'
 
     train_dir = BASE_DATALOADER_DIR + 'train/'
     val_dir = BASE_DATALOADER_DIR + 'val/'
 
-    train_options = {"epochs": 50,
+    train_options = {"epochs": 5,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      "train_dir": train_dir, 
@@ -205,4 +214,8 @@ if __name__=='__main__':
     dataloaders['val'] = val_loader
 
     # train the DNN
-    train_model(model, datasets, dataloaders, loss_func, optimizer, device, num_epochs=train_options['epochs'], log_every=100)
+    model = train_model(model, datasets, dataloaders, loss_func, optimizer, device, num_epochs=train_options['epochs'], log_every=100)
+
+    # save the best model to the directory
+    torch.save(model.state_dict(), results_dir + "/best_model.pt")
+
