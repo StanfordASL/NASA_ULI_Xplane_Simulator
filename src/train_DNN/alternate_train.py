@@ -50,8 +50,8 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
     
     n_tr_batches_seen = 0
    
-    train_loss = []
-    val_loss = []
+    train_loss_vec = []
+    val_loss_vec = []
 
     with tqdm(total=num_epochs, position=0) as pbar:
         pbar2 = tqdm(total=dataset_sizes['train'], position=1)
@@ -121,12 +121,12 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                 
                 if phase == 'train':
                     tr_loss = epoch_loss
-                    train_loss.append(tr_loss)
+                    train_loss_vec.append(tr_loss)
 
                 if phase == 'val':
                     val_loss = epoch_loss
                     writer.add_scalar('loss/val', val_loss, n_tr_batches_seen)
-                    val_loss.append(val_loss)
+                    val_loss_vec.append(val_loss)
 
                 pbar.set_postfix(tr_loss=tr_loss, val_loss=val_loss)
 
@@ -147,7 +147,7 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
 
     # plot the results to a file
     plot_file = results_dir + '/loss.pdf' 
-    basic_plot_ts(train_loss, val_loss, plot_file, legend = ['Train Loss', 'Val Loss'])
+    basic_plot_ts(train_loss_vec, val_loss_vec, plot_file, legend = ['Train Loss', 'Val Loss'])
 
     # load best model weights
     model.load_state_dict(best_model_wts)
