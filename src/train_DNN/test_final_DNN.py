@@ -74,6 +74,8 @@ if __name__=='__main__':
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/test_DNN_taxinet/')
 
+    model_dir = NASA_ULI_ROOT_DIR + '/model/'
+
     # where raw images and csvs are saved
     BASE_DATALOADER_DIR = DATA_DIR + 'nominal_conditions'
 
@@ -90,6 +92,8 @@ if __name__=='__main__':
     model = model.to(device)
 
     # load the pre-trained model
+    model.load_state_dict(torch.load(model_dir + '/best_model.pt'))
+    model.eval()
 
     # DATALOADERS
     # instantiate the model and freeze all but penultimate layers
@@ -107,5 +111,25 @@ if __name__=='__main__':
     dataloaders = {}
     dataloaders['test'] = test_loader
 
-    # TEST THE DNN
+    # TEST THE TRAINED DNN
     test_results = test_model(model, test_dataset, test_loader, device, loss_func)
+    test_results['model_type'] = 'trained'
+
+    with open(results_dir + '/results.txt', 'w') as f:
+        for k,v in test_results.items():
+            out_str = '\t'.join([str(k), str(v)]) + '\n'
+            f.write(out_str)
+
+
+    untrained_model = TaxiNetDNN()
+    untrained_model = untrained_model.to(device)
+
+    # COMPARE WITH A RANDOM, UNTRAINED DNN
+    test_results = test_model(untrained_model, test_dataset, test_loader, device, loss_func)
+    test_results['model_type'] = 'untrained'
+
+    with open(results_dir + '/results.txt', 'a') as f:
+        f.write('\n')
+        for k,v in test_results.items():
+            out_str = '\t'.join([str(k), str(v)]) + '\n'
+            f.write(out_str)
