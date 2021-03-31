@@ -107,10 +107,19 @@ def getParams(num):
     elif num < 18:
         angLimit = 20
         turn = [0.1, 0.2, 0.3][num-15]
-    else:
+    elif num < 20:
         angLimit = 25
         turn = [0.25, 0.35][num-18]
-
+    elif num < 23:
+        angLimit = 20
+        turn = [0.08, 0.18, 0.28][num-20]
+    elif num < 25:
+        angLimit = 25
+        turn = [0.23, 0.33][num-23]
+    else:
+        angLimit = 10
+        turn = 0.1
+        centerCTE = (num-26)*3
     return angLimit, turn, centerCTE
 
 def runTrainingCases(client, caseNums, endPerc = 99):

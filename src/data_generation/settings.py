@@ -9,14 +9,14 @@ Parameters to be specified by user
 # Directory to save output data
 # NOTE: CSV file and images will be overwritten if already exists in that directory, but
 # extra images (for time steps that do not occur in the new episodes) will not be deleted
-OUT_DIR = "/scratch/smkatz/NASA_ULI/benchmark/nominal_conditions/"
+OUT_DIR = "/scratch/smkatz/NASA_ULI/benchmark/overcast/"
 
 # Time of day in local time, e.g. 8.0 = 8AM, 17.0 = 5PM
 TIME_OF_DAY = 8.0
 
 # Cloud cover (higher numbers are cloudier/darker)
 # 0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast
-CLOUD_COVER = 0
+CLOUD_COVER = 4
 
 # Cases to run (determines how other variables are set)
 # example  - runs 2 short trajectories (used for initial testing)
@@ -24,9 +24,10 @@ CLOUD_COVER = 0
 #            varying amplitude and frequency (ideal for collecting OoD data)
 # largeset - runs 20 sinusoidal trajectories with varying amplitude and frequency
 #            and centered at different crosstrack errors
+# TODO: documentation here!!!!!!!!!
 # the last five trajectories of the largeset have the same parameter settings as
 # the largeset
-case = 'example'
+case = 'largeset'
 
 # Frequency with which to record data
 # NOTE: this is approximate due to computational overhead
@@ -45,12 +46,16 @@ elif case == 'smallset':
     CASE_INDS = [*range(15, 20)]
 elif case == 'largeset':
     CASE_INDS = [*range(0, 20)]
+elif case == 'validation':
+    CASE_INDS = [*range(20, 25)]
+elif case == 'test':
+    CASE_INDS = [*range(25, 28)]
 else:
     print('invalid case name, running the example set...')
     CASE_INDS = [18, 19]
 
 # Percentage down the runway to end the trajectory (shorter for the example trajectories)
-if case == 'smallset' or case == 'largeset':
+if case == 'smallset' or case == 'largeset' or case == 'validation' or case == 'test':
     END_PERC = 95.0
 else:
     END_PERC = 4.0
