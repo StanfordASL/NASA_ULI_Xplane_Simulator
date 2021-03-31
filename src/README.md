@@ -24,7 +24,21 @@
         - get this from Stanford Box
         - `nominal_conditions.tar.gz`
         - `https://stanford.box.com/s/fpp92p7hr1rg4tiiksvuergw515t6z87`
-    - 
+
+- STEP 0: `python3 train_DNN/optimized_DNN_train.py`
+    - see comments at top of script, trains a DNN 
+    - saves model and loss at `SCRATCH_DIR/DNN_train_taxinet`
+    - play with the model architecture, optimizer, etc. based on your custom application!
+
+- UTILITIES:
+    - `model_taxinet.py`
+        - resnet-18 DNN, works fairly well
+    - `taxinet_dataloader.py`
+        - crucial, loads raw images at run-time for scalability
+        - can optimize dataloader based on you r application
+    - `plot_utils.py`
+        - to plot the loss curve
+
 ## utils
 - generic utilities
 
