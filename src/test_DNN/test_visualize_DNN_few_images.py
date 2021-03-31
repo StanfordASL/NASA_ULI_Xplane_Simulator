@@ -40,7 +40,7 @@ if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print('found device: ', device)
 
-    model_dir = NASA_ULI_ROOT_DIR + '/model/'
+    model_dir = NASA_ULI_ROOT_DIR + '/model'
 
     # MODEL
     # instantiate the model 
@@ -69,10 +69,10 @@ if __name__ == '__main__':
     visualization_dir = SCRATCH_DIR + '/test_DNN_taxinet/viz/'
     remove_and_create_dir(visualization_dir)
 
-    MAX_FILES = np.inf
+    MAX_FILES = 200
 
     # where original XPLANE images are stored 
-    data_dir = DATA_DIR + '/test_dataset_smaller_ims/'
+    data_dir = DATA_DIR + '/nominal_conditions_val/'
    
     # resize to 224 x 224 x 3 for EfficientNets
     # prepare image transforms
@@ -114,17 +114,20 @@ if __name__ == '__main__':
 
         # run the model and get the loss
         inputs = tensor_image_example.unsqueeze(0)
+        #inputs = tensor_image_example
         inputs = inputs.to(device)
         labels = labels.to(device)
+
+        print(' ')
         print('inputs: ', inputs.shape)
-        print('labels: ', labels.shape)
+        print('labels: ', labels)
         outputs = model(inputs)
         loss = loss_func(outputs, labels).item()
         
         preds = outputs.detach().cpu().numpy()[0]
         print('preds: ', preds)
-
         print('loss: ', loss)
+        print(' ')
 
         # periodically save the images to disk 
         if i % NUM_PRINT == 0:

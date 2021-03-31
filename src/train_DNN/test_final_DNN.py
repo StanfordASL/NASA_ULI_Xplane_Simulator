@@ -46,9 +46,9 @@ def test_model(model, dataset, dataloader, device, loss_func):
         outputs = model(inputs)
         end = time.time()
 
-        #print('inputs: ', inputs.shape)
-        #print('outputs: ', outputs[0], outputs.shape)
-        #print('labels: ', labels[0], labels.shape)
+        print('inputs: ', inputs.shape)
+        print('outputs: ', outputs[0], outputs.shape)
+        print('labels: ', labels[0], labels.shape)
 
         times_per_item.append( (end - start)/inputs.shape[0] )
         
@@ -78,7 +78,7 @@ if __name__=='__main__':
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/test_DNN_taxinet/')
 
-    model_dir = NASA_ULI_ROOT_DIR + '/model/epoch_30_resnet18/'
+    model_dir = NASA_ULI_ROOT_DIR + '/model/'
 
     # where raw images and csvs are saved
     BASE_DATALOADER_DIR = DATA_DIR + 'nominal_conditions'
