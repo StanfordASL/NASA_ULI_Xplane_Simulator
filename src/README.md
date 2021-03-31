@@ -1,5 +1,7 @@
-# Directory Structure
+# Data Availability
+## 
 
+# Directory Structure
 
 ## examples
 - basic code to visualize images and state information
@@ -17,6 +19,12 @@
 ## train DNN
 - code to train an LEC for vision to estimate distance to centerline and other state information for an airplane in X-Plane
 
+- REQUIRED: 
+    - training data under `NASA_ULI_ROOT_DIR/data/nominal_conditions`
+        - get this from Stanford Box
+        - `nominal_conditions.tar.gz`
+        - `https://stanford.box.com/s/fpp92p7hr1rg4tiiksvuergw515t6z87`
+    - 
 ## utils
 - generic utilities
 
