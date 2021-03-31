@@ -27,7 +27,8 @@ def freeze_model(model, freeze_frac=True):
     # freeze everything
     n_params = len(list(model.parameters()))
     for i, p in enumerate(model.parameters()):
-        if i < 6*n_params/7:
+        #if i < 6*n_params/7:
+        if i < 4*n_params/7:
             p.requires_grad = False
 
     # make last layer trainable

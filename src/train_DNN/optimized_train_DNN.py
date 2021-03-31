@@ -154,12 +154,16 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                     best_model_wts = copy.deepcopy(model.state_dict())
                     
             pbar.update(1)
-    
+
+            print(' ')
+            print('training loss: ', train_loss_vec)
+            print('val loss: ', val_loss_vec)
+            print(' ')
+
     time_elapsed = time.time() - since
     print('Training complete in {:.0f}m {:.0f}s'.format(
         time_elapsed // 60, time_elapsed % 60))
     print('Best val Loss: {:4f}'.format(best_loss))
-    
     
     writer.flush()
 
@@ -188,7 +192,7 @@ if __name__=='__main__':
     train_dir = BASE_DATALOADER_DIR + '/'
     val_dir = BASE_DATALOADER_DIR + '_val/'
 
-    train_options = {"epochs": 15,
+    train_options = {"epochs": 30,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      "train_dir": train_dir, 
