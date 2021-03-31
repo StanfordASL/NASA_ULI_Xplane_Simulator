@@ -1,7 +1,7 @@
 # Directory Structure
 
 
-# `examples`
+## `examples`
 - basic code to visualize images and state information
 - STEP 0: `python3 examples/load_initial_dataset.py` 
     - creates a few visualized images in the `scratch` subfolder
@@ -10,9 +10,9 @@
 - STEP 1: `python3 examples/image_dataloader.py`
     - sample pytorch dataloader to load images and corresponding state variables
 
-# `train_DNN`
+## `train_DNN`
     - code to train an LEC for vision to estimate distance to centerline and other state information for an airplane in X-Plane
 
-# `utils`
+## `utils`
     - generic utilities
 
