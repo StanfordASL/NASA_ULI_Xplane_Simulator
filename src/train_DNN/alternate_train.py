@@ -1,3 +1,21 @@
+"""
+    Code to train a DNN vision model to predict aircraft state variables
+    REQUIRES:
+        - raw camera images (training) in DATA_DIR + '/nominal_conditions'
+        - validation data in DATA_DIR + '/nominal_conditions_val/'
+
+    FUNCTIONALITY:
+        - DNN is a ResNet-18 (pre-trained) with learnable final linear layer
+            for regression with N=2 outputs
+        - N=2 state outputs are:
+            - distance_to_centerline_normalized
+            - downtrack_position_NORMALIZED 
+        - trains for configurable number of epochs
+        - saves the best model params and loss plot in 
+            - SCRATCH_DIR + '/DNN_train_taxinet/'
+
+"""
+
 import time
 import copy
 import torch
