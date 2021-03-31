@@ -89,10 +89,14 @@ if __name__=='__main__':
     # MODEL
     # instantiate the model 
     model = TaxiNetDNN()
-    model = model.to(device)
 
     # load the pre-trained model
-    model.load_state_dict(torch.load(model_dir + '/best_model.pt'))
+    if device.type == 'cpu':
+        model.load_state_dict(torch.load(model_dir + '/best_model.pt', map_location=torch.device('cpu')))
+    else:
+        model.load_state_dict(torch.load(model_dir + '/best_model.pt'))
+    
+    model = model.to(device)
     model.eval()
 
     # DATALOADERS
