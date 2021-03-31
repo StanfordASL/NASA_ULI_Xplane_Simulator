@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     # how often to plot a few images for progress report
     # warning: plotting is slow
-    NUM_PRINT = 5
+    NUM_PRINT = 2
 
     IMAGE_WIDTH = 224
     IMAGE_HEIGHT = 224
@@ -80,11 +80,9 @@ if __name__ == '__main__':
     for i, image_name in enumerate(image_list):
 
         # open images and apply transforms
-        print(i, image_name)
         fname = data_dir + '/' + str(image_name)
         image = Image.open(fname).convert('RGB')
         tensor_image_example = tfms(image)
-        print(tensor_image_example.shape)
 
         # add image
         image_tensor_list.append(tensor_image_example)
@@ -96,14 +94,17 @@ if __name__ == '__main__':
         # normalized downtrack position
         downtrack_position_norm = specific_row['downtrack_position_NORMALIZED'].item()
 
+        # normalized heading error
+        heading_error_norm = specific_row['heading_error_NORMALIZED'].item()
+
         # add tensor
-        target_tensor_list.append([dist_centerline_norm, downtrack_position_norm])
+        target_tensor_list.append([dist_centerline_norm, downtrack_position_norm, heading_error_norm])
 
         # periodically save the images to disk 
         if i % NUM_PRINT == 0:
             plt.imshow(image)
             # original image
-            title_str = ' '.join(['Dist Centerline: ', str(dist_centerline_norm)]) 
+            title_str = ' '.join(['Dist Centerline: ', str(round(dist_centerline_norm,3)), 'Downtrack Pos. Norm: ', str(round(downtrack_position_norm,3)), '\n', 'Heading Error Norm: ', str(round(heading_error_norm, 3))]) 
             plt.title(title_str)
             plt.savefig(visualization_dir + '/' + str(i) + '.png')
             plt.close()
@@ -131,7 +132,7 @@ if __name__ == '__main__':
     target_tensor = torch.tensor(target_tensor_list)
     print(target_tensor.shape)
     
-    # size: 126 numbers by 2 targets 
+    # size: 126 numbers by 3 targets 
     # torch.Size([126])
 
     # save tensors to disk 
