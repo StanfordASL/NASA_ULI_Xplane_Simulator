@@ -1,5 +1,15 @@
 # Data Availability
-## 
+## Small Dataset
+- a small dataset is checked into GIT
+    - `NASA_ULI_ROOT_DIR/data/test_dataset_smaller_ims`
+    - has a few images and labels.csv with state information
+
+## Larger GB-Size Datasets
+- we host them on Stanford Box with a public downloadable link
+- to get them on a remote machine, click on the URL on box
+    - e.g. an example is: `https://stanford.box.com/s/sqozq4d0nmx9xgj1iz0y0anb3t5zdpdc`
+- replace the `/s/` with `/shared/static` in the below curl command
+    - `curl -L https://stanford.box.com/shared/static/sqozq4d0nmx9xgj1iz0y0anb3t5zdpdc --output nominal_conditions.tar.gz`
 
 # Directory Structure
 
