@@ -13,7 +13,7 @@ The X-Camera plugin can be downloaded [here](https://www.stickandrudderstudios.c
 
 ## Step 4: Download X-Plane Connect
 To control the aircraft from python, we need to install [NASA's X-Plane Connect Plugin](https://github.com/nasa/XPlaneConnect).
-1. Download the latest release [here](https://github.com/nasa/XPlaneConnect/releases).
+1. Download the stable release (Version 1.2.1) [here](https://github.com/nasa/XPlaneConnect/releases).
 2. Navigate to `X-Plane 11/Resources/plugins` and copy the contents of the downloaded folder to this location.
 
 # Quick Start Tutorial
@@ -66,7 +66,7 @@ To control the aircraft from python, we can use [NASA's X-Plane Connect Plugin](
     client.pauseSim(False)
     ```
     After running this command, the aircraft should start to travel down the runway at 5 m/s. After watching it move, pause it again.
-        ```python
+    ```python
         client.pauseSim(True)
     ```
 6. We can control the aircraft by turning the nosewheel/rudder. The rudder input (fourth argument) should be between -1 and 1. Positive creates a right turn.
