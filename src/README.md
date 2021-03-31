@@ -3,6 +3,10 @@
 
 ## examples
 - basic code to visualize images and state information
+- REQUIRED: data under `NASA_ULI_ROOT_DIR/data/test_dataset_smaller_ims`
+    - `this is already checked into GIT`
+    - png files have images from airplane camera
+    - `labels.csv` has state information
 - STEP 0: `python3 examples/load_initial_dataset.py` 
     - creates a few visualized images in the `scratch` subfolder
     - do not check results from `scratch` into GIT
