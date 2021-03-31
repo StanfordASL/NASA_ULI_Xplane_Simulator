@@ -54,11 +54,13 @@ def test_model(model, dataset, dataloader, device, loss_func):
 
     results = {
         "loss_name": loss_name,
-        "losses": np.concatenate(losses),
+        "losses": np.mean(losses),
         "time_per_item": np.mean(times_per_item),
         "time_per_item_std": np.std(times_per_item) / np.sqrt(dataset_size),
     }
-        
+    
+    print(results)
+
     return results
 
 
@@ -77,7 +79,7 @@ if __name__=='__main__':
 
     test_dir = BASE_DATALOADER_DIR + '_test/'
 
-    dataloader_params = {'batch_size': 512,
+    dataloader_params = {'batch_size': 128,
                          'shuffle': False,
                          'num_workers': 12,
                          'drop_last': False}
@@ -85,6 +87,7 @@ if __name__=='__main__':
     # MODEL
     # instantiate the model 
     model = TaxiNetDNN()
+    model = model.to(device)
 
     # load the pre-trained model
 
