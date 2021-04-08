@@ -19,14 +19,16 @@ TIME_OF_DAY = 8.0
 CLOUD_COVER = 4
 
 # Cases to run (determines how other variables are set)
-# example  - runs 2 short trajectories (used for initial testing)
-# smallset - runs 5 sinusoidal trajectories centered at zero crosstrack error with 
-#            varying amplitude and frequency (ideal for collecting OoD data)
-# largeset - runs 20 sinusoidal trajectories with varying amplitude and frequency
-#            and centered at different crosstrack errors
-# TODO: documentation here!!!!!!!!!
+# example    - runs 2 short trajectories (used for initial testing)
+# smallset   - runs 5 sinusoidal trajectories centered at zero crosstrack error with 
+#              varying amplitude and frequency (ideal for collecting OoD data)
+# largeset   - runs 20 sinusoidal trajectories with varying amplitude and frequency
+#              and centered at different crosstrack errors
+# validation - runs 5 sinusoidal trajectories centered at zero crosstrack error with 
+#              varying amplitude and frequency
+# test       - runs 3 sinusoidal trajectories center at 3 different crosstrack errors
 # the last five trajectories of the largeset have the same parameter settings as
-# the largeset
+# the smallset
 case = 'largeset'
 
 # Frequency with which to record data
