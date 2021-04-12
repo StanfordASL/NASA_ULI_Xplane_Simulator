@@ -53,11 +53,11 @@ This tutorial assumes that you are already followed the steps [here](..) and tha
     `END_DTP`
     * Used to determine when to stop the simulation
 
-2. Open a terminal and navigate to `NASA_ULI_Xplane_Simulator/src/simulation` in each of them.
+2. Open a terminal and navigate to `NASA_ULI_Xplane_Simulator/src/simulation`.
 
 3. In the terminal, run
-```shell script
-python3 run_sim.py
-```
+    ```shell script
+    python3 run_sim.py
+    ```
 
 4. Quickly minimize the terminal (if using the image-based controller) so that it does not get in the way of the screenshots. There should be a five second buffer since starting the `run_sim.py` script.

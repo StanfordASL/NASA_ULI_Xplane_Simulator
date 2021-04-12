@@ -38,14 +38,14 @@ This tutorial assumes that you are already followed the steps [here](..) and tha
 2. Open two separate terminals and navigate to `NASA_ULI_Xplane_Simulator/src/data_generation` in each of them.
 
 3. In the first terminal, run
-```shell script
-python3 sinusoidal.py
-```
+    ```shell script
+    python3 sinusoidal.py
+    ```
 
 4. Quickly after, in the second terminal, run
-```shell script
-python3 data_recorder.py
-```
+    ```shell script
+    python3 data_recorder.py
+    ```
 
 5. Quickly minimize both terminals so that they are not in the way of the data recorder. There should be a five second buffer since starting the `sinusoidal.py` script.
 
