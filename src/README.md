@@ -13,8 +13,8 @@ The X-Camera plugin can be downloaded [here](https://www.stickandrudderstudios.c
 
 ## Step 4: Download X-Plane Connect
 To control the aircraft from python, we need to install [NASA's X-Plane Connect Plugin](https://github.com/nasa/XPlaneConnect).
-1. Download the stable release (Version 1.2.1) [here](https://github.com/nasa/XPlaneConnect/releases).
-2. Navigate to `X-Plane 11/Resources/plugins` and copy the contents of the downloaded folder to this location.
+1. Download the stable release (Version 1.2.0, download the file called `XPlaneConnect-v1.2.0.zip`) [here](https://github.com/nasa/XPlaneConnect/releases).
+2. Navigate to `X-Plane 11/Resources/plugins` and copy the downloaded folder to this location.
 
 # Quick Start Tutorial
 Next, let's do a quick tutorial to get you started on using X-Plane 11 and the python interface. This tutorial was written by Sydney Katz based on a tutorial originally written by Kyle Julian.
@@ -28,13 +28,15 @@ Next, let's do a quick tutorial to get you started on using X-Plane 11 and the p
 6. Optionally select weather and time of day (okay to just leave as is for this tutorial).
 7. Click the "Start Flight" button in the bottom right corner.
 
+NOTE: When you do your first flight, it may ask you for an activation key. This is the key for the aircraft (not the XPlane 11 activation key). Enter the key and then restart the program.
+
 It may take a minute or so to load in the flight. Once it loads, you should see a view from the cockpit of the aicraft sitting at the start of the runway. Next, we will configure X-Plane 11 to give us a view from the right wing of the aircraft using the X-Camera plugin.
 
 ## Step 2: Configure X-Camera
 1. Click on the "Plugins" tab at the top of the screen.
 2. From there hover over "X-Camera" and select "Toggle Control Panel" from the dropdown menu.
 3. In the Camera panel located in the top right, scroll until you see "TaxiNet". Select it. The camera view should switch to the right wing of the aircraft.
-    * NOTE: If TaxiNet is not in the Camera panel, the config file must be loaded. To select a camera config, go to File > Browse Community Aircraft Files, search for CameraSetting_X-Camera_Car_C208B.csv, and click "Import File".
+    * NOTE: If TaxiNet is not in the Camera panel, the config file must be loaded. To select a camera config, go to File > Browse Community Aircraft Files. Search for "C208B" and select the file with the author "TaxiNet". Click "Import File".
 4. Once you have the correct camera view, you can close the X-Camera Control Panel
 
 We are now ready to start calling X-Plane 11 from python!
