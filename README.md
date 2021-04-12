@@ -11,6 +11,7 @@ This code was tested using Python 3.6.12. In general, any version of Python 3 sh
 # Quick Links
 * [X-Plane 11 Set Up Instructions](src/)
 * [Data Generation Instructions](src/data_generation)
+* [Controller Simulation Instructions](src/simulation)
 
 # Repository Structure
 - `src`

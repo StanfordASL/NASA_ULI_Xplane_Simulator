@@ -8,7 +8,8 @@ import mss
 import cv2
 import os
 
-filename = "../../models/KJ_TaxiNet.nnet"
+# Read in the network
+filename = "../../models/TinyTaxiNet.nnet"
 network = NNet(filename)
 
 ### IMPORTANT PARAMETERS FOR IMAGE PROCESSING ###
@@ -24,7 +25,13 @@ screen_width = 360  # For cropping
 screen_height = 200  # For cropping
 
 def getCurrentImage():
-    #time.sleep(1)
+    """ Returns a downsampled image of the current X-Plane 11 image
+        compatible with the TinyTaxiNet neural network state estimator
+
+        NOTE: this is designed for screens with 1920x1080 resolution
+        operating X-Plane 11 in full screen mode - it will need to be adjusted
+        for other resolutions
+    """
     # Get current screenshot
     img = cv2.cvtColor(np.array(screenShot.grab(monitor)),
                        cv2.COLOR_BGRA2BGR)[230:, :, :]
@@ -56,6 +63,13 @@ def getCurrentImage():
     return img2.flatten()
 
 def getStateTinyTaxiNet(client):
+    """ Returns an estimate of the crosstrack error (meters)
+        and heading error (degrees) by passing the current
+        image through TinyTaxiNet
+
+        Args:
+            client: XPlane Client
+    """
     image = getCurrentImage()
     pred = network.evaluate_network(image)
     return pred[0], pred[1]
