@@ -11,8 +11,14 @@ Parameters to be specified by user
 # extra images (for time steps that do not occur in the new episodes) will not be deleted
 OUT_DIR = "/scratch/smkatz/NASA_ULI/benchmark/example/"
 
-# Time of day in local time, e.g. 8.0 = 8AM, 17.0 = 5PM
-TIME_OF_DAY = 8.0
+# # Time of day in local time, e.g. 8.0 = 8AM, 17.0 = 5PM
+# TIME_OF_DAY = 8.0
+
+# Start and end of range of possible time of day in local time, e.g. 8.0 = 8AM, 17.0 = 5PM
+# For each sinsoidal trajectory in the run, the time of day will be sampled uniformly
+# from this range
+TIME_OF_DAY_START = 8.0
+TIME_OF_DAY_END = 11.0
 
 # Cloud cover (higher numbers are cloudier/darker)
 # 0 = Clear, 1 = Cirrus, 2 = Scattered, 3 = Broken, 4 = Overcast

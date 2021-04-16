@@ -19,11 +19,11 @@ import settings
 def main():
     with xpc3.XPlaneConnect() as client:
         # Set weather and time of day
-        client.sendDREF("sim/time/zulu_time_sec", settings.TIME_OF_DAY * 3600 + 8 * 3600)
+        #client.sendDREF("sim/time/zulu_time_sec", settings.TIME_OF_DAY * 3600 + 8 * 3600)
         client.sendDREF("sim/weather/cloud_type[0]", settings.CLOUD_COVER)
         
         # Run the trajectories
-        runTrainingCases(client, settings.CASE_INDS, endPerc = settings.END_PERC)
+        runTrainingCases(client, settings.CASE_INDS, settings.TIME_OF_DAY_START, settings.TIME_OF_DAY_END, endPerc = settings.END_PERC)
 
 def runSinusoidal(client, headingLimit, turn, centerCTE, simSpeed = 1.0, endPerc = 99):
     """ Runs a sinusoidal trajectory down the runway
@@ -122,7 +122,7 @@ def getParams(num):
         centerCTE = (num-26)*3
     return angLimit, turn, centerCTE
 
-def runTrainingCases(client, caseNums, endPerc = 99):
+def runTrainingCases(client, caseNums, start_time, end_time, endPerc = 99):
     """ Main function to run the training cases
 
         Args:
@@ -132,6 +132,10 @@ def runTrainingCases(client, caseNums, endPerc = 99):
             endPerc: percentage down runway to end trajectory and reset
     """
     for i in caseNums:
+        # Set time of day
+        time_of_day = np.random.uniform(start_time, end_time)
+        client.sendDREF("sim/time/zulu_time_sec", time_of_day * 3600 + 8 * 3600)
+
         angLimit, turn, centerCTE = getParams(i)
         runSinusoidal(client, angLimit, turn, centerCTE, endPerc=endPerc)
         time.sleep(1)
