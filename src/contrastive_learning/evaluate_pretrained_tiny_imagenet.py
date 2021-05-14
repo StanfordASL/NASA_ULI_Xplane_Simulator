@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
             f.close()
 
-    df = pandas.DataFrame({'condition': df_condition_list, 'train_test': train_test_split, 'error_list': df_error_list}) 
+    df = pandas.DataFrame({'Condition': df_condition_list, 'Train/Test': df_train_test_list, 'Error': df_error_list}) 
     
     csv_fname = SCRATCH_DIR + '/' + prefix + '/results.csv'
     df.to_csv(csv_fname)
