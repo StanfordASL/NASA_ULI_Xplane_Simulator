@@ -1,8 +1,4 @@
 """
-    Goal: Visualize images from aircraft camera and load as a pytorch dataloader
-    1. load all example png examples as a pytorch dataloader
-    2. save a few images to disk for visualization
-    3. load the corresponding state information in the h5 file
 """
 
 import sys, os
@@ -30,37 +26,40 @@ SCRATCH_DIR = NASA_ULI_ROOT_DIR + '/scratch/'
 UTILS_DIR = NASA_ULI_ROOT_DIR + '/src/utils/'
 sys.path.append(UTILS_DIR)
 
+NNET_UTILS_DIR = NASA_ULI_ROOT_DIR + '/src/simulation/'
+sys.path.append(NNET_UTILS_DIR)
+from nnet import *
+
 from textfile_utils import *
 
-def show(img, fname_path, title=''):
-    npimg = img.numpy()
-    plt.imshow(np.transpose(npimg, (1,2,0)), cmap='gray')
-    plt.title(title)
-    plt.savefig(fname_path)
-
 if __name__ == '__main__':
-    # how often to plot a few images for progress report
-    # warning: plotting is slow
-    NUM_PRINT = 5
-    prefix = 'tiny_taxinet'
+
+    prefix = 'evaluate_tiny_taxinet'
     train_test_split_list = ['train', 'validation', 'test']
 
-    MAX_IMAGES = 30
+    MAX_IMAGES = 10
     NROW = 5
 
-    for condition in ['afternoon', 'morning', 'night', 'overcast']:
+    # Read in the pretrained tiny taxinet DNN
+    filename = "../../models/TinyTaxiNet.nnet"
+    network = NNet(filename)
+
+    condition_list = ['afternoon', 'morning', 'night', 'overcast']
+
+    for condition in condition_list:
         # create a temp dir to visualize a few images
         visualization_dir = SCRATCH_DIR + '/' + prefix + '/' + condition
         remove_and_create_dir(visualization_dir)
+
         for train_test_split in train_test_split_list:
+            
+            print('evaluating: ', condition, train_test_split)
 
             # where original XPLANE images are stored 
             label_file = DATA_DIR + 'downsampled/' + condition + '/' + '_'.join([condition, train_test_split, 'downsampled']) + '.h5'
 
-            print('label_file: ', label_file)
-
             f = h5py.File(label_file, "r")
-            # get the training data, plot a few random images
+            # get the training data
             x_train = f['X_train'].value
             y_train = f['y_train'].value
            
@@ -74,17 +73,22 @@ if __name__ == '__main__':
             num_images_total = x_train.shape[0]
 
             start_index = np.random.randint(num_images_total - MAX_IMAGES)
-            start_index = 0 
-            image_array_np = x_train[start_index: start_index + MAX_IMAGES]
-            tensor_array = torch.tensor(image_array_np).unsqueeze(1)
-            
-            # grid array
-            ####################
-            grid = torchvision.utils.make_grid(tensor_array, nrow=NROW)
-            fname_path = visualization_dir + '/' + condition + '_' + train_test_split + '.png'
-            show(grid, fname_path, title=condition)
+            start_index = 0
+
+            x_array_np = x_train[start_index: start_index + MAX_IMAGES]
+            y_array_np = y_train[start_index: start_index + MAX_IMAGES]
+
+            # evaluate the DNN for a single input
+            for idx in range(x_array_np.shape[0]):
+                pred = network.evaluate_network(x_array_np[idx].flatten())
+                target = y_array_np[idx]
+                target_pred = target[0:2]
+                error = np.linalg.norm(target_pred - pred)
+                print(' ')
+                print('idx: ', idx)
+                print('pred: ', pred)
+                print('target_pred: ', target_pred)
+                print('error: ', error)
+                print(' ')
+
             f.close()
-
-            # now plot images and corresponding state information
-
-
