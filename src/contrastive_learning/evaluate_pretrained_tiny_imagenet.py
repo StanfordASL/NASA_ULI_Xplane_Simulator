@@ -46,6 +46,13 @@ if __name__ == '__main__':
 
     condition_list = ['afternoon', 'morning', 'night', 'overcast']
 
+    # 
+    df_condition_list = []
+    df_train_test_list = []
+    df_target_pred_list = []
+    df_pred_list = []
+    df_error_list = []
+
     for condition in condition_list:
         # create a temp dir to visualize a few images
         visualization_dir = SCRATCH_DIR + '/' + prefix + '/' + condition
@@ -72,11 +79,16 @@ if __name__ == '__main__':
             ####################
             num_images_total = x_train.shape[0]
 
+            # to get a subset of data
             start_index = np.random.randint(num_images_total - MAX_IMAGES)
             start_index = 0
 
             x_array_np = x_train[start_index: start_index + MAX_IMAGES]
             y_array_np = y_train[start_index: start_index + MAX_IMAGES]
+
+            # to use all data
+            x_array_np = x_train
+            y_array_np = y_train
 
             # evaluate the DNN for a single input
             for idx in range(x_array_np.shape[0]):
@@ -84,11 +96,25 @@ if __name__ == '__main__':
                 target = y_array_np[idx]
                 target_pred = target[0:2]
                 error = np.linalg.norm(target_pred - pred)
-                print(' ')
-                print('idx: ', idx)
-                print('pred: ', pred)
-                print('target_pred: ', target_pred)
-                print('error: ', error)
-                print(' ')
+
+                #print(' ')
+                #print('idx: ', idx)
+                #print('target_pred: ', target_pred)
+                #print('pred: ', pred)
+                #print('error: ', error)
+                #print(' ')
+
+                # add data to a list
+                df_condition_list.append(condition)
+                df_train_test_list.append(train_test_split)
+                df_target_pred_list.append(target_pred)
+                df_pred_list.append(pred)
+                df_error_list.append(error)
 
             f.close()
+
+    df = pandas.DataFrame({'condition': df_condition_list, 'train_test': train_test_split, 'error_list': df_error_list}) 
+    
+    csv_fname = SCRATCH_DIR + '/' + prefix + '/results.csv'
+    df.to_csv(csv_fname)
+
