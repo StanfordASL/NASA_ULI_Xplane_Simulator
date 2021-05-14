@@ -13,8 +13,11 @@ x_var = 'Condition'
 y_var = 'Error'
 hue_var = 'Train/Test'
 
+title_str = 'Tiny Taxinet Pre-trained Model'
+
 # Draw a nested boxplot to show bills by day and time
 sns.boxplot(x = x_var, y = y_var,
             hue = hue_var, data = df)
 plt.savefig('results/taxinet_barplot.pdf')
+plt.title(title_str)
 plt.close()
