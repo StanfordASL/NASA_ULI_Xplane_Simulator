@@ -8,8 +8,22 @@
 - The larger dataset is at the Stanford PURL listed in the main README
 - Has Images from X-Plane and Aircraft Pose
 - Has both 8 x 16 downsampled images under `downsampled` and larger images
+    - the downsampled images are referred to as the Tiny TaxiNet dataset
 - Images are split into train, validation, and test datasets for 4 environmental conditions
 - see the scripts in `download_data` to access data
+
+# Pre-trained DNNs to Predict Aircraft Pose
+- `pretrained_DNN`
+    - has ResNet-18 with 2 final linear regression outputs pre-trained on morning condition data
+    - was trained used the scripts in `train_DNN`
+
+- `models`
+    - has a Tiny TaxiNet model that takes in a flattened 8 x 16 image
+    - predicts two scalars
+        - estimate of the crosstrack error (meters)
+        - heading error (degrees) 
+        - these are un-normalized outputs
+    - see the code in `simulation` for controller-in-the-loop training
 
 # Training a Vision DNN to Predict Aircraft Pose 
 If you simply want to train a DNN to predict aircraft pose using pre-recorded training
