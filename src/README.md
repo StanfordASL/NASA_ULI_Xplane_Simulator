@@ -6,6 +6,10 @@
 
 ## Larger GB-Size Datasets
 - The larger dataset is at the Stanford PURL listed in the main README
+- Has Images from X-Plane and Aircraft Pose
+- Has both 8 x 16 downsampled images under `downsampled` and larger images
+- Images are split into train, validation, and test datasets for 4 environmental conditions
+- see the scripts in `download_data` to access data
 
 # Training a Vision DNN to Predict Aircraft Pose 
 If you simply want to train a DNN to predict aircraft pose using pre-recorded training
@@ -26,6 +30,7 @@ data, follow the below tutorial. To control the aircraft using a DNN, see the ne
 
 - STEP 1: `python3 examples/image_dataloader.py`
     - sample pytorch dataloader to load images and corresponding state variables
+    - saves an example pytorch dataloader in `scratch/dataloader`
 
 ## train DNN
 - code to train an LEC for vision to estimate distance to centerline and other state information for an airplane in X-Plane
