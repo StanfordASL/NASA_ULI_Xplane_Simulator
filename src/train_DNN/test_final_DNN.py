@@ -27,7 +27,7 @@ sys.path.append(UTILS_DIR)
 
 from textfile_utils import *
 
-def test_model(model, dataset, dataloader, device, loss_func):
+def test_model(model, dataset, dataloader, device, loss_func, print_mode = False):
     
     dataset_size = len(dataset)
     
@@ -46,9 +46,10 @@ def test_model(model, dataset, dataloader, device, loss_func):
         outputs = model(inputs)
         end = time.time()
 
-        print('inputs: ', inputs.shape)
-        print('outputs: ', outputs[0], outputs.shape)
-        print('labels: ', labels[0], labels.shape)
+        if print_mode:
+            print('inputs: ', inputs.shape)
+            print('outputs: ', outputs[0], outputs.shape)
+            print('labels: ', labels[0], labels.shape)
 
         times_per_item.append( (end - start)/inputs.shape[0] )
         
@@ -78,8 +79,9 @@ if __name__=='__main__':
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/test_DNN_taxinet/')
 
-    model_dir = NASA_ULI_ROOT_DIR + '/model/'
-
+    # tests the pre-trained model
+    model_dir = NASA_ULI_ROOT_DIR + '/pretrained_DNN/' 
+    #'epoch_30_resnet18/'
 
     # condition
     condition = 'morning'
