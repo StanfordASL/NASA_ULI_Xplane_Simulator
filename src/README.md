@@ -65,6 +65,12 @@ data, follow the below tutorial. To control the aircraft using a DNN, see the ne
     - it is up to you to fine-tune and validate your model based on your application 
     - saves test results in `SCRATCH_DIR/test_DNN_taxinet`
 
+- STEP 2: `python3 train_DNN/visualize_DNN_few_images.py`
+    - tests a trained model in 'model/' from an example run on the test dataset
+    - saves test results in `SCRATCH_DIR/test_DNN_taxinet/viz`
+    - plots the predictions and actual state info on actual test images for easy visualization
+
+
 - UTILITIES:
     - `model_taxinet.py`
         - resnet-18 DNN, works fairly well

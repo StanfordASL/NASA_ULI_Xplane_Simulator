@@ -18,7 +18,7 @@ from torchvision import transforms
 from torch.utils.data import TensorDataset, DataLoader
 from PIL import Image
 
-DATA_DIR = NASA_ULI_ROOT_DIR + '/data/'
+DATA_DIR = os.environ['NASA_DATA_DIR'] 
 
 CODE_DIR = NASA_ULI_ROOT_DIR + '/src/train_DNN/'
 sys.path.append(CODE_DIR)
@@ -40,7 +40,17 @@ if __name__ == '__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print('found device: ', device)
 
-    model_dir = NASA_ULI_ROOT_DIR + '/model'
+    model_dir = NASA_ULI_ROOT_DIR + '/pretrained_DNN/'
+
+    # condition
+    condition = 'morning'
+    # larger images require a resnet, downsampled can have a small custom DNN
+    dataset_type = 'large_images'
+
+    # where raw images and csvs are saved
+    BASE_DATALOADER_DIR = DATA_DIR + '/' + dataset_type  + '/' + condition
+
+    data_dir = BASE_DATALOADER_DIR + '/' + condition + '_test'
 
     # MODEL
     # instantiate the model 
@@ -71,9 +81,6 @@ if __name__ == '__main__':
 
     MAX_FILES = 200
 
-    # where original XPLANE images are stored 
-    data_dir = DATA_DIR + '/nominal_conditions_val/'
-   
     # resize to 224 x 224 x 3 for EfficientNets
     # prepare image transforms
     # warning: you might need to change the normalization values given your dataset's statistics
