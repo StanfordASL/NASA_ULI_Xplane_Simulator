@@ -25,11 +25,12 @@
         - these are un-normalized outputs
     - see the code in `simulation` for controller-in-the-loop training
 
-# Training a Vision DNN to Predict Aircraft Pose 
+# Training/Testing a Vision DNN to Predict Aircraft Pose 
 If you simply want to train a DNN to predict aircraft pose using pre-recorded training
 data, follow the below tutorial. To control the aircraft using a DNN, see the next section.
 
-## examples
+## Data Visualization 
+- under `examples`
 - basic code to visualize images and state information
 
 - REQUIRED: data under `NASA_ULI_ROOT_DIR/data/test_dataset_smaller_ims`
@@ -46,8 +47,9 @@ data, follow the below tutorial. To control the aircraft using a DNN, see the ne
     - sample pytorch dataloader to load images and corresponding state variables
     - saves an example pytorch dataloader in `scratch/dataloader`
 
-## train DNN
+## Training a DNN
 - code to train an LEC for vision to estimate distance to centerline and other state information for an airplane in X-Plane
+- NOTE: if you want to test a pre-trained model, skip to steps 1 and 2 which load a pre-trained model
 
 - REQUIRED: 
     - training data under `NASA_ULI_ROOT_DIR/data/nominal_conditions`
@@ -60,10 +62,12 @@ data, follow the below tutorial. To control the aircraft using a DNN, see the ne
     - play with the model architecture, optimizer, etc. based on your custom application!
 
 - STEP 1: `python3 train_DNN/test_final_DNN.py`
-    - tests a trained model in 'model/' from an example run on the test dataset
+    - tests a trained model in `pretrained_DNN/` from an example run on the test dataset
+    - if you want to test a model you trained in step 0, modify the loading file path
     - compares with a random set of weights
     - it is up to you to fine-tune and validate your model based on your application 
-    - saves test results in `SCRATCH_DIR/test_DNN_taxinet`
+    - saves test results in `SCRATCH_DIR/test_DNN_taxinet/results.txt`
+    - call `python3 train_DNN/barplot_trained_DNN_performance.py` to plot errors across conditions
 
 - STEP 2: `python3 train_DNN/visualize_DNN_few_images.py`
     - tests a trained model in 'model/' from an example run on the test dataset
