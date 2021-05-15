@@ -5,24 +5,25 @@
     - has a few images and labels.csv with state information
 
 ## Larger GB-Size Datasets
-- we host them on Stanford Box with a public downloadable link
-- to get them on a remote machine, click on the URL on box
-    - e.g. an example is: `https://stanford.box.com/s/sqozq4d0nmx9xgj1iz0y0anb3t5zdpdc`
-- replace the `/s/` with `/shared/static` in the below curl command
-    - `curl -L https://stanford.box.com/shared/static/sqozq4d0nmx9xgj1iz0y0anb3t5zdpdc --output nominal_conditions.tar.gz`
+- The larger dataset is at the Stanford PURL listed in the main README
 
-# Directory Structure
+# Training a Vision DNN to Predict Aircraft Pose 
+If you simply want to train a DNN to predict aircraft pose using pre-recorded training
+data, follow the below tutorial. To control the aircraft using a DNN, see the next section.
 
 ## examples
 - basic code to visualize images and state information
+
 - REQUIRED: data under `NASA_ULI_ROOT_DIR/data/test_dataset_smaller_ims`
     - `this is already checked into GIT`
     - png files have images from airplane camera
     - `labels.csv` has state information
+
 - STEP 0: `python3 examples/load_initial_dataset.py` 
     - creates a few visualized images in the `scratch` subfolder
     - do not check results from `scratch` into GIT
     - `scratch/viz` shows camera images from a few runs with state information
+
 - STEP 1: `python3 examples/image_dataloader.py`
     - sample pytorch dataloader to load images and corresponding state variables
 
@@ -31,9 +32,7 @@
 
 - REQUIRED: 
     - training data under `NASA_ULI_ROOT_DIR/data/nominal_conditions`
-        - get this from Stanford Box
-        - `nominal_conditions.tar.gz`
-        - `https://stanford.box.com/s/fpp92p7hr1rg4tiiksvuergw515t6z87`
+        - get this from Stanford PURL
 
 - STEP 0: `python3 train_DNN/optimized_DNN_train.py`
     - see comments at top of script, trains a DNN 
@@ -57,8 +56,7 @@
 ## utils
 - generic utilities
 
-=======
-# Getting Set Up with X-Plane 11
+# Getting Set Up with X-Plane 11 for Controller-in-the-Loop Simulations
 The following steps walk you through the steps required to set up X-Plane 11 for use with the code in this repository.
 
 ## Step 1: Download and Install X-Plane 11

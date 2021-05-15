@@ -14,6 +14,7 @@ Second, export a system (bash) variable corresponding to where you have download
 `export NASA_DATA_DIR='path to where data is downloaded}`
 
 This code was tested using Python 3.6.12. In general, any version of Python 3 should work.
+See src/requirements.txt for specific packages.
 
 # Quick Links
 * [X-Plane 11 Set Up Instructions](src/)
