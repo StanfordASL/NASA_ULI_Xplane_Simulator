@@ -8,6 +8,11 @@ First, export a system (bash) variable corresponding to where you have cloned th
 
 This code was tested using Python 3.6.12. In general, any version of Python 3 should work.
 
+# Quick Links
+* [X-Plane 11 Set Up Instructions](src/)
+* [Data Generation Instructions](src/data_generation)
+* [Controller Simulation Instructions](src/simulation)
+
 # Repository Structure
 - `src`
     - Has the main code. See `src/examples` for a tutorial.
