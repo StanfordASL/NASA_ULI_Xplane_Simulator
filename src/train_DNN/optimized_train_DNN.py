@@ -30,7 +30,7 @@ from plot_utils import *
 # make sure this is a system variable in your bashrc
 NASA_ULI_ROOT_DIR=os.environ['NASA_ULI_ROOT_DIR']
 
-DATA_DIR = NASA_ULI_ROOT_DIR + '/data/'
+DATA_DIR = os.environ['NASA_DATA_DIR'] 
 
 # where intermediate results are saved
 # never save this to the main git repo
@@ -52,7 +52,7 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
     Writes tensorboard info to ./runs/ if given
     """
     writer = None
-    writer = SummaryWriter()
+    writer = SummaryWriter(log_dir=results_dir)
         
     model = model.to(device)
     
@@ -183,16 +183,21 @@ if __name__=='__main__':
 
     print('found device: ', device)
 
+    # condition
+    condition = 'morning'
+    # larger images require a resnet, downsampled can have a small custom DNN
+    dataset_type = 'large_images'
+
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/DNN_train_taxinet/')
 
     # where raw images and csvs are saved
-    BASE_DATALOADER_DIR = DATA_DIR + 'nominal_conditions'
+    BASE_DATALOADER_DIR = DATA_DIR + '/' + dataset_type  + '/' + condition
 
-    train_dir = BASE_DATALOADER_DIR + '/'
-    val_dir = BASE_DATALOADER_DIR + '_val/'
+    train_dir = BASE_DATALOADER_DIR + '/' + condition + '_train'
+    val_dir = BASE_DATALOADER_DIR + '/' + condition + '_validation'
 
-    train_options = {"epochs": 30,
+    train_options = {"epochs": 2,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      "train_dir": train_dir, 
