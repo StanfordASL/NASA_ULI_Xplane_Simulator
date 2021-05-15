@@ -16,7 +16,7 @@ from plot_utils import *
 # make sure this is a system variable in your bashrc
 NASA_ULI_ROOT_DIR=os.environ['NASA_ULI_ROOT_DIR']
 
-DATA_DIR = NASA_ULI_ROOT_DIR + '/data/'
+DATA_DIR = os.environ['NASA_DATA_DIR'] 
 
 # where intermediate results are saved
 # never save this to the main git repo
@@ -80,10 +80,16 @@ if __name__=='__main__':
 
     model_dir = NASA_ULI_ROOT_DIR + '/model/'
 
-    # where raw images and csvs are saved
-    BASE_DATALOADER_DIR = DATA_DIR + 'nominal_conditions'
 
-    test_dir = BASE_DATALOADER_DIR + '_test/'
+    # condition
+    condition = 'morning'
+    # larger images require a resnet, downsampled can have a small custom DNN
+    dataset_type = 'large_images'
+
+    # where raw images and csvs are saved
+    BASE_DATALOADER_DIR = DATA_DIR + '/' + dataset_type  + '/' + condition
+
+    test_dir = BASE_DATALOADER_DIR + '/' + condition + '_test'
 
     dataloader_params = {'batch_size': 128,
                          'shuffle': False,

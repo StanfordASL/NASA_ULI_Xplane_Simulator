@@ -42,12 +42,14 @@ data, follow the below tutorial. To control the aircraft using a DNN, see the ne
 - STEP 0: `python3 train_DNN/optimized_DNN_train.py`
     - see comments at top of script, trains a DNN 
     - saves model and loss at `SCRATCH_DIR/DNN_train_taxinet`
+    - can visualize via tensorboard
     - play with the model architecture, optimizer, etc. based on your custom application!
 
 - STEP 1: `python3 train_DNN/test_final_DNN.py`
     - tests a trained model in 'model/' from an example run on the test dataset
     - compares with a random set of weights
     - it is up to you to fine-tune and validate your model based on your application 
+    - saves test results in `SCRATCH_DIR/test_DNN_taxinet`
 
 - UTILITIES:
     - `model_taxinet.py`
