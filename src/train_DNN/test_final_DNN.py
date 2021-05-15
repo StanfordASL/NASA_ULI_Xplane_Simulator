@@ -83,69 +83,70 @@ if __name__=='__main__':
     model_dir = NASA_ULI_ROOT_DIR + '/pretrained_DNN/' 
     #'epoch_30_resnet18/'
 
-    # condition
-    condition = 'morning'
+    condition_list = ['afternoon', 'morning', 'night', 'overcast']
+
     # larger images require a resnet, downsampled can have a small custom DNN
     dataset_type = 'large_images'
 
-    # where raw images and csvs are saved
-    BASE_DATALOADER_DIR = DATA_DIR + '/' + dataset_type  + '/' + condition
-
-    test_dir = BASE_DATALOADER_DIR + '/' + condition + '_test'
-
-    dataloader_params = {'batch_size': 128,
-                         'shuffle': False,
-                         'num_workers': 12,
-                         'drop_last': False}
-
-    # MODEL
-    # instantiate the model 
-    model = TaxiNetDNN()
-
-    # load the pre-trained model
-    if device.type == 'cpu':
-        model.load_state_dict(torch.load(model_dir + '/best_model.pt', map_location=torch.device('cpu')))
-    else:
-        model.load_state_dict(torch.load(model_dir + '/best_model.pt'))
-    
-    model = model.to(device)
-    model.eval()
-
-    # DATALOADERS
-    # instantiate the model and freeze all but penultimate layers
-    test_dataset = TaxiNetDataset(test_dir)
-
-    test_loader = DataLoader(test_dataset, **dataloader_params)
-
-    # LOSS FUNCTION
-    loss_func = torch.nn.MSELoss().to(device)
-
-    # DATASET INFO
-    datasets = {}
-    datasets['test'] = test_dataset
-
-    dataloaders = {}
-    dataloaders['test'] = test_loader
-
-    # TEST THE TRAINED DNN
-    test_results = test_model(model, test_dataset, test_loader, device, loss_func)
-    test_results['model_type'] = 'trained'
+    train_test_val = 'test'
 
     with open(results_dir + '/results.txt', 'w') as f:
-        for k,v in test_results.items():
-            out_str = '\t'.join([str(k), str(v)]) + '\n'
-            f.write(out_str)
+        header = '\t'.join(['condition', 'train_test_val', 'dataset_type', 'model_type', 'loss', 'mean_inference_time_sec', 'std_inference_time_sec']) 
+        f.write(header + '\n')
 
+        for condition in condition_list:
+            # where raw images and csvs are saved
+            BASE_DATALOADER_DIR = DATA_DIR + '/' + dataset_type  + '/' + condition
 
-    untrained_model = TaxiNetDNN()
-    untrained_model = untrained_model.to(device)
+            test_dir = BASE_DATALOADER_DIR + '/' + condition + '_' + train_test_val
 
-    # COMPARE WITH A RANDOM, UNTRAINED DNN
-    test_results = test_model(untrained_model, test_dataset, test_loader, device, loss_func)
-    test_results['model_type'] = 'untrained'
+            dataloader_params = {'batch_size': 128,
+                                 'shuffle': False,
+                                 'num_workers': 12,
+                                 'drop_last': False}
 
-    with open(results_dir + '/results.txt', 'a') as f:
-        f.write('\n')
-        for k,v in test_results.items():
-            out_str = '\t'.join([str(k), str(v)]) + '\n'
-            f.write(out_str)
+            # MODEL
+            # instantiate the model 
+            model = TaxiNetDNN()
+
+            # load the pre-trained model
+            if device.type == 'cpu':
+                model.load_state_dict(torch.load(model_dir + '/best_model.pt', map_location=torch.device('cpu')))
+            else:
+                model.load_state_dict(torch.load(model_dir + '/best_model.pt'))
+            
+            model = model.to(device)
+            model.eval()
+
+            # DATALOADERS
+            # instantiate the model and freeze all but penultimate layers
+            test_dataset = TaxiNetDataset(test_dir)
+
+            test_loader = DataLoader(test_dataset, **dataloader_params)
+
+            # LOSS FUNCTION
+            loss_func = torch.nn.MSELoss().to(device)
+
+            # DATASET INFO
+            datasets = {}
+            datasets['test'] = test_dataset
+
+            dataloaders = {}
+            dataloaders['test'] = test_loader
+
+            # TEST THE TRAINED DNN
+            test_results = test_model(model, test_dataset, test_loader, device, loss_func)
+            test_results['model_type'] = 'trained'
+
+            out_str = '\t'.join([condition, train_test_val, dataset_type, test_results['model_type'], str(test_results['losses']), str(test_results['time_per_item']), str(test_results['time_per_item_std'])]) 
+            f.write(out_str + '\n')
+
+            # COMPARE WITH A RANDOM, UNTRAINED DNN
+            untrained_model = TaxiNetDNN()
+            untrained_model = untrained_model.to(device)
+
+            test_results = test_model(untrained_model, test_dataset, test_loader, device, loss_func)
+            test_results['model_type'] = 'untrained'
+
+            out_str = '\t'.join([condition, train_test_val, dataset_type, test_results['model_type'], str(test_results['losses']), str(test_results['time_per_item']), str(test_results['time_per_item_std'])]) 
+            f.write(out_str + '\n')
