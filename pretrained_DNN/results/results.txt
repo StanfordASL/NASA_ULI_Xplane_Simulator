@@ -1,0 +1,9 @@
+condition	train_test_val	dataset_type	model_type	loss	mean_inference_time_sec	std_inference_time_sec
+afternoon	test	large_images	trained	0.038499396	0.00021360608525616977	1.389830643141734e-05
+afternoon	test	large_images	untrained	0.5929167	6.051297886585806e-05	1.2721436578547945e-07
+morning	test	large_images	trained	0.020422569	5.151813563245994e-05	1.4037275604978685e-07
+morning	test	large_images	untrained	0.3066385	6.204386217853961e-05	1.7596809536295481e-07
+night	test	large_images	trained	0.44830316	4.9574409262566053e-05	9.169428960113927e-08
+night	test	large_images	untrained	0.33942953	5.87219358525856e-05	5.109988627703195e-08
+overcast	test	large_images	trained	0.05478751	5.138021435736221e-05	2.7263205823097146e-07
+overcast	test	large_images	untrained	0.27577817	6.027274389505942e-05	3.0831571378979545e-07
