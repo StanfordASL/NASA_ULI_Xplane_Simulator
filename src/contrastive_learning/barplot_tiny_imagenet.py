@@ -15,9 +15,11 @@ hue_var = 'Train/Test'
 
 title_str = 'Tiny Taxinet Pre-trained Model'
 
+order = ['morning', 'afternoon', 'overcast', 'night']
+
 # Draw a nested boxplot to show bills by day and time
 sns.boxplot(x = x_var, y = y_var,
-            hue = hue_var, data = df)
+            hue = hue_var, data = df, order = order)
 plt.title(title_str)
 plt.savefig('results/taxinet_barplot.pdf')
 plt.close()
