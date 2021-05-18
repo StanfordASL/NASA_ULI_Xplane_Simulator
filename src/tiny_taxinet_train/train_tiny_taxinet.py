@@ -193,7 +193,7 @@ if __name__=='__main__':
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/tiny_taxinet_DNN_train/')
 
-    train_options = {"epochs": 20,
+    train_options = {"epochs": 50,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      }
@@ -201,7 +201,8 @@ if __name__=='__main__':
     dataloader_params = {'batch_size': 4096,
                          'shuffle': True,
                          'num_workers': 2,
-                         'drop_last': False}
+                         'drop_last': False,
+                         'pin_memory': True}
 
     # MODEL
     # instantiate the model and freeze all but penultimate layers

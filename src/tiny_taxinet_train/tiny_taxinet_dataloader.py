@@ -27,7 +27,10 @@ def tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, 
 
     local_dataset_list = []
 
-    for condition in condition_list:
+    x_train_total = np.array([])
+    y_train_total = np.array([])
+
+    for i, condition in enumerate(condition_list):
         # where original XPLANE images are stored 
         label_file = DATA_DIR + 'downsampled/' + condition + '/' + '_'.join([condition, train_test_split, 'downsampled']) + '.h5'
 
@@ -44,13 +47,24 @@ def tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, 
             print('y shape: ', y_train.shape)
             print(' ')
 
-        local_tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(x_train), torch.tensor(y_train))
+        if i == 0:
+            x_train_total = x_train
+            y_train_total = y_train
+        else:
+            #print('x_train_total.shape: ', x_train_total.shape)
+            #print('x_train.shape: ', x_train.shape)
+            x_train_total = np.vstack((x_train_total, x_train))
+            y_train_total = np.vstack((y_train_total, y_train))
 
-        local_dataset_list.append(local_tensor_dataset)
+        #local_tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(x_train), torch.tensor(y_train))
+        #local_dataset_list.append(local_tensor_dataset)
+
+    #print('x_train_total: ', x_train_total.shape)
+    #print('y_train_total: ', y_train_total.shape)
 
     # tensor dataset
-    #tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(x_train), torch.tensor(y_train))
-    tensor_dataset = torch.utils.data.ConcatDataset(local_dataset_list)
+    tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(x_train_total), torch.tensor(y_train_total))
+    #tensor_dataset = torch.utils.data.ConcatDataset(local_dataset_list)
 
     print(' ')
     print('overall dataset size: ', tensor_dataset.__len__())
@@ -75,7 +89,6 @@ if __name__ == '__main__':
     for train_test_split in train_test_split_list:
 
         tensor_dataset, tensor_dataloader = tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, params, prefix='downsampled', print_mode = True)
-
 
         for batch_idx, data in enumerate(tensor_dataloader):
             x_batch = data[0]
