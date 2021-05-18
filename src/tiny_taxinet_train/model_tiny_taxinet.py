@@ -33,7 +33,11 @@ class TinyTaxiNetDNN(nn.Module):
         self.fc4 = torch.nn.Linear(8, 2)
 
     def forward(self, z):
-        x = torch.flatten(z)
+        print('z: ', z.shape)
+        x = torch.flatten(z, 1)
+        print('x: ', x.shape)
+        #x = x.unsqueeze(2)
+        print('x squeeze: ', x.shape)
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
@@ -42,4 +46,6 @@ class TinyTaxiNetDNN(nn.Module):
         x = self.fc4(x)
 
         return x
+
+
 

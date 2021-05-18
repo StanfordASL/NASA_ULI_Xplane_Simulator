@@ -23,7 +23,7 @@ sys.path.append(UTILS_DIR)
 
 from textfile_utils import *
 
-def tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, batch_params, prefix='downsampled', print_mode = True):
+def tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, params, prefix='downsampled', print_mode = True, num_y = 2):
 
     local_dataset_list = []
 
@@ -34,9 +34,9 @@ def tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, 
 
         f = h5py.File(label_file, "r")
         # get the training data, plot a few random images
-        x_train = f['X_train'].value
-        y_train = f['y_train'].value
-    
+        x_train = f['X_train'].value.astype(np.float32)
+        y_train = f['y_train'].value.astype(np.float32)[:, 0:num_y]
+
         if print_mode:
             print(' ')
             print('condition: ', condition, ', train_test_split: ', train_test_split)

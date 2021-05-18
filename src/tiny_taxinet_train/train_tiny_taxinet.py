@@ -24,9 +24,8 @@ import numpy as np
 from tqdm.autonotebook import tqdm as tqdm
 from torch.utils.tensorboard import SummaryWriter
 
-from tiny_taxinet_model import TinyTaxiNetDNN, freeze_model
+from model_tiny_taxinet import TinyTaxiNetDNN
 from tiny_taxinet_dataloader import *
-from plot_utils import *
 
 # make sure this is a system variable in your bashrc
 NASA_ULI_ROOT_DIR=os.environ['NASA_ULI_ROOT_DIR']
@@ -40,9 +39,13 @@ SCRATCH_DIR = NASA_ULI_ROOT_DIR + '/scratch/'
 UTILS_DIR = NASA_ULI_ROOT_DIR + '/src/utils/'
 sys.path.append(UTILS_DIR)
 
+TRAIN_DNN_DIR = NASA_ULI_ROOT_DIR + '/src/train_DNN/'
+sys.path.append(TRAIN_DNN_DIR)
+
 from textfile_utils import *
 from tiny_taxinet_dataloader import *
 from model_tiny_taxinet import TinyTaxiNetDNN
+from plot_utils import *
 
 def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, results_dir, num_epochs=25, log_every=100):
     """
@@ -190,14 +193,14 @@ if __name__=='__main__':
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/tiny_taxinet_DNN_train/')
 
-    train_options = {"epochs": 2,
+    train_options = {"epochs": 10,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      }
 
     dataloader_params = {'batch_size': 4096,
                          'shuffle': True,
-                         'num_workers': 1,
+                         'num_workers': 2,
                          'drop_last': False}
 
     # MODEL
@@ -208,7 +211,7 @@ if __name__=='__main__':
     # instantiate the model and freeze all but penultimate layers
     train_dataset, train_loader = tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, 'train', dataloader_params)
 
-    val_dataset, val_loader = tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, 'val', dataloader_params)
+    val_dataset, val_loader = tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, 'validation', dataloader_params)
 
 
     # OPTIMIZER
