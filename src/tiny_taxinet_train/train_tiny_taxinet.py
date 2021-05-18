@@ -41,7 +41,8 @@ UTILS_DIR = NASA_ULI_ROOT_DIR + '/src/utils/'
 sys.path.append(UTILS_DIR)
 
 from textfile_utils import *
-
+from tiny_taxinet_dataloader import *
+from model_tiny_taxinet import TinyTaxiNetDNN
 
 def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, results_dir, num_epochs=25, log_every=100):
     """
@@ -184,25 +185,14 @@ if __name__=='__main__':
 
     print('found device: ', device)
 
-    # condition
-    condition = 'morning'
-    # larger images require a resnet, downsampled can have a small custom DNN
-    dataset_type = 'large_images'
+    condition_list = ['afternoon', 'morning', 'overcast', 'night']
 
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/tiny_taxinet_DNN_train/')
 
-    # where raw images and csvs are saved
-    BASE_DATALOADER_DIR = DATA_DIR + '/' + dataset_type  + '/' + condition
-
-    train_dir = BASE_DATALOADER_DIR + '/' + condition + '_train'
-    val_dir = BASE_DATALOADER_DIR + '/' + condition + '_validation'
-
-    train_options = {"epochs": 20,
+    train_options = {"epochs": 2,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
-                     "train_dir": train_dir, 
-                     "val_dir": val_dir
                      }
 
     dataloader_params = {'batch_size': 4096,
