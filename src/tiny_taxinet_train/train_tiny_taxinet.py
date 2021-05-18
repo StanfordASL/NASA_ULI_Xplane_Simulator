@@ -193,7 +193,7 @@ if __name__=='__main__':
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/tiny_taxinet_DNN_train/')
 
-    train_options = {"epochs": 10,
+    train_options = {"epochs": 20,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      }
