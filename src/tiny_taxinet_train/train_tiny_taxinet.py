@@ -189,6 +189,7 @@ if __name__=='__main__':
     print('found device: ', device)
 
     condition_list = ['afternoon', 'morning', 'overcast', 'night']
+    condition_list = ['afternoon']
 
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/tiny_taxinet_DNN_train/')

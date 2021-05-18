@@ -62,13 +62,23 @@ def tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, 
     #print('x_train_total: ', x_train_total.shape)
     #print('y_train_total: ', y_train_total.shape)
 
+    #y_train_total_norm = y_train_total - y_train_total.mean()
+    #y_train_total_norm = y_train_total_norm / y_train_total_norm.max()
+    y_train_total_norm = y_train_total
+
     # tensor dataset
-    tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(x_train_total), torch.tensor(y_train_total))
+    tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(x_train_total), torch.tensor(y_train_total_norm))
     #tensor_dataset = torch.utils.data.ConcatDataset(local_dataset_list)
 
     print(' ')
     print('overall dataset size: ', tensor_dataset.__len__())
     print(' ')
+
+
+    print('ymin: ', tensor_dataset[:][1][:,0].min())
+    print('ymax: ', tensor_dataset[:][1][:,0].max())
+    print('ymin: ', tensor_dataset[:][1][:,1].min())
+    print('ymax: ', tensor_dataset[:][1][:,1].max())
 
     tensor_dataloader = torch.utils.data.DataLoader(tensor_dataset, **params)
 
@@ -90,6 +100,7 @@ if __name__ == '__main__':
 
         tensor_dataset, tensor_dataloader = tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, params, prefix='downsampled', print_mode = True)
 
+
         for batch_idx, data in enumerate(tensor_dataloader):
             x_batch = data[0]
             y_batch = data[1]
@@ -99,7 +110,3 @@ if __name__ == '__main__':
             #print('x_batch: ', x_batch.shape)
             #print('y_batch: ', y_batch.shape)
             #print(' ')
-
-
-
-
