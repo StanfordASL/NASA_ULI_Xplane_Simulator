@@ -25,6 +25,8 @@ from textfile_utils import *
 
 def tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, batch_params, prefix='downsampled', print_mode = True):
 
+    local_dataset_list = []
+
     for condition in condition_list:
         # where original XPLANE images are stored 
         label_file = DATA_DIR + 'downsampled/' + condition + '/' + '_'.join([condition, train_test_split, 'downsampled']) + '.h5'
@@ -38,12 +40,21 @@ def tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, 
         if print_mode:
             print(' ')
             print('condition: ', condition, ', train_test_split: ', train_test_split)
-            print('X_train shape: ', x_train.shape)
-            print('y_train shape: ', y_train.shape)
+            print('X shape: ', x_train.shape)
+            print('y shape: ', y_train.shape)
             print(' ')
 
+        local_tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(x_train), torch.tensor(y_train))
+
+        local_dataset_list.append(local_tensor_dataset)
+
     # tensor dataset
-    tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(x_train), torch.tensor(y_train))
+    #tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(x_train), torch.tensor(y_train))
+    tensor_dataset = torch.utils.data.ConcatDataset(local_dataset_list)
+
+    print(' ')
+    print('overall dataset size: ', tensor_dataset.__len__())
+    print(' ')
 
     tensor_dataloader = torch.utils.data.DataLoader(tensor_dataset, **params)
 
@@ -59,7 +70,7 @@ if __name__ == '__main__':
     prefix = 'tiny_taxinet'
     train_test_split_list = ['train', 'validation', 'test']
 
-    condition_list = ['afternoon']
+    condition_list = ['afternoon', 'morning', 'overcast', 'night']
 
     for train_test_split in train_test_split_list:
 
@@ -70,11 +81,11 @@ if __name__ == '__main__':
             x_batch = data[0]
             y_batch = data[1]
             
-            print(' ')
-            print(' Testing Dataloader ')
-            print('x_batch: ', x_batch.shape)
-            print('y_batch: ', y_batch.shape)
-            print(' ')
+            #print(' ')
+            #print(' Testing Dataloader ')
+            #print('x_batch: ', x_batch.shape)
+            #print('y_batch: ', y_batch.shape)
+            #print(' ')
 
 
 
