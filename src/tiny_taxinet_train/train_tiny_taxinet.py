@@ -188,8 +188,8 @@ if __name__=='__main__':
 
     print('found device: ', device)
 
-    #condition_list = ['afternoon', 'morning', 'overcast', 'night']
-    condition_list = ['afternoon']
+    condition_list = ['afternoon', 'morning', 'overcast', 'night']
+    #condition_list = ['afternoon']
 
     condition_str = '_'.join(condition_list)
 
