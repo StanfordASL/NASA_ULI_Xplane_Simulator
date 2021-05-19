@@ -37,6 +37,8 @@ if __name__=='__main__':
 
     order = ['morning', 'afternoon', 'overcast', 'night']
 
+    # barplot 1
+    #########################################################
     # Draw a nested boxplot to show bills by day and time
     sns.boxplot(x = x_var, y = y_var,
                 hue = hue_var, data = df, order = order)
@@ -44,7 +46,8 @@ if __name__=='__main__':
     plt.savefig(results_dir + '/all_tiny_taxinet_barplot.pdf')
     plt.close()
 
-
+    # barplot 2
+    #########################################################
     order = ['morning', 'afternoon', 'overcast']
 
     # Draw a nested boxplot to show bills by day and time
@@ -53,3 +56,21 @@ if __name__=='__main__':
     plt.title(title_str)
     plt.savefig(results_dir + '/subset_tiny_taxinet_barplot.pdf')
     plt.close()
+
+    x_var = 'Evaluation Condition' 
+    y_var = 'Loss'
+    hue_var = 'Model Type'
+
+    title_str = 'Tiny Taxinet Pytorch Model'
+
+    order = ['morning', 'afternoon', 'overcast', 'night']
+
+    col_var = 'Train Condition'
+    # barplot 1
+    #########################################################
+    # Draw a nested boxplot to show bills by day and time
+    sns.catplot(x = x_var, y = y_var, col = hue_var, 
+                hue = col_var, data = df, order = order, kind='bar')
+    plt.savefig(results_dir + '/type_tiny_taxinet_barplot.pdf')
+    plt.close()
+
