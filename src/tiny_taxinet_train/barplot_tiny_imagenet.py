@@ -41,5 +41,15 @@ if __name__=='__main__':
     sns.boxplot(x = x_var, y = y_var,
                 hue = hue_var, data = df, order = order)
     plt.title(title_str)
-    plt.savefig(results_dir + '/tiny_taxinet_barplot.pdf')
+    plt.savefig(results_dir + '/all_tiny_taxinet_barplot.pdf')
+    plt.close()
+
+
+    order = ['morning', 'afternoon', 'overcast']
+
+    # Draw a nested boxplot to show bills by day and time
+    sns.boxplot(x = x_var, y = y_var,
+                hue = hue_var, data = df, order = order)
+    plt.title(title_str)
+    plt.savefig(results_dir + '/subset_tiny_taxinet_barplot.pdf')
     plt.close()
