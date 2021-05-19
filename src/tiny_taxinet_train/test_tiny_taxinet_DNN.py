@@ -42,7 +42,6 @@ if __name__=='__main__':
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/test_tiny_taxinet_DNN/')
 
-
     evaluation_condition_list = ['afternoon', 'morning', 'overcast', 'night']
 
     train_condition_list = [['afternoon'], ['afternoon', 'morning', 'overcast', 'night']]
@@ -61,7 +60,7 @@ if __name__=='__main__':
 
 
     with open(results_dir + '/results.txt', 'w') as f:
-        header = '\t'.join(['evaluation_condition', 'train_condition', 'train_test_val', 'dataset_type', 'model_type', 'loss', 'mean_inference_time_sec', 'std_inference_time_sec']) 
+        header = '\t'.join(['Evaluation Condition', 'Train Condition', 'Train/Test', 'Dataset Type', 'Model Type', 'Loss', 'mean_inference_time_sec', 'std_inference_time_sec']) 
         f.write(header + '\n')
 
         for evaluation_condition in evaluation_condition_list:
@@ -69,6 +68,11 @@ if __name__=='__main__':
             for train_condition in train_condition_list:
 
                 train_str = '_'.join(train_condition)
+
+                if train_str == 'afternoon_morning_overcast_night':
+                    label_train_str = 'All'
+                else:
+                    label_train_str = train_str
 
                 model_dir = SCRATCH_DIR + '/tiny_taxinet_DNN_train/' + train_str + '/'
 
@@ -103,7 +107,7 @@ if __name__=='__main__':
                 test_results = test_model(model, test_dataset, test_loader, device, loss_func)
                 test_results['model_type'] = 'trained'
 
-                out_str = '\t'.join([evaluation_condition, train_str, train_test_val, dataset_type, test_results['model_type'], str(test_results['losses']), str(test_results['time_per_item']), str(test_results['time_per_item_std'])]) 
+                out_str = '\t'.join([evaluation_condition, label_train_str, train_test_val, dataset_type, test_results['model_type'], str(test_results['losses']), str(test_results['time_per_item']), str(test_results['time_per_item_std'])]) 
                 f.write(out_str + '\n')
 
                 # COMPARE WITH A RANDOM, UNTRAINED DNN
@@ -113,5 +117,5 @@ if __name__=='__main__':
                 test_results = test_model(untrained_model, test_dataset, test_loader, device, loss_func)
                 test_results['model_type'] = 'untrained'
 
-                out_str = '\t'.join([evaluation_condition, train_str, train_test_val, dataset_type, test_results['model_type'], str(test_results['losses']), str(test_results['time_per_item']), str(test_results['time_per_item_std'])]) 
+                out_str = '\t'.join([evaluation_condition, label_train_str, train_test_val, dataset_type, test_results['model_type'], str(test_results['losses']), str(test_results['time_per_item']), str(test_results['time_per_item_std'])]) 
                 f.write(out_str + '\n')
