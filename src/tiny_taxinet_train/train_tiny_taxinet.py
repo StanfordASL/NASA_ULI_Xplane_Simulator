@@ -196,14 +196,14 @@ if __name__=='__main__':
     # where the training results should go
     results_dir = remove_and_create_dir(SCRATCH_DIR + '/tiny_taxinet_DNN_train/' + condition_str + '/')
 
-    train_options = {"epochs": 50,
+    train_options = {"epochs": 100,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      }
 
-    dataloader_params = {'batch_size': 4096,
+    dataloader_params = {'batch_size': 256,
                          'shuffle': True,
-                         'num_workers': 2,
+                         'num_workers': 1,
                          'drop_last': False,
                          'pin_memory': True}
 

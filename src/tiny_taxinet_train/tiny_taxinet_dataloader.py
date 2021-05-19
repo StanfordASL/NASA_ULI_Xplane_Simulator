@@ -32,7 +32,7 @@ def tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, train_test_split, 
 
     for i, condition in enumerate(condition_list):
         # where original XPLANE images are stored 
-        label_file = DATA_DIR + 'downsampled/' + condition + '/' + '_'.join([condition, train_test_split, 'downsampled']) + '.h5'
+        label_file = DATA_DIR + 'downsampled/' + condition + '_downsampled' + '/' + '_'.join([condition, train_test_split, 'downsampled']) + '.h5'
 
 
         f = h5py.File(label_file, "r")
