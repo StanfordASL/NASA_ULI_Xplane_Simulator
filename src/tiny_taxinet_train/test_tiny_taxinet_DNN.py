@@ -37,6 +37,10 @@ if __name__=='__main__':
     torch.cuda.empty_cache()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+    # base model dir, if you trained custom models
+    # BASE_MODEL_DIR = SCRATCH_DIR + '/tiny_taxinet_DNN_train/' + train_str + '/'
+    BASE_MODEL_DIR = NASA_ULI_ROOT_DIR + '/models/tiny_taxinet_pytorch/'
+
     print('found device: ', device)
 
     # where the training results should go
@@ -74,7 +78,7 @@ if __name__=='__main__':
                 else:
                     label_train_str = train_str
 
-                model_dir = SCRATCH_DIR + '/tiny_taxinet_DNN_train/' + train_str + '/'
+                model_dir = BASE_MODEL_DIR + '/' + train_str + '/'
 
                 # load a model according to its training condition
 
