@@ -48,7 +48,7 @@ if __name__=='__main__':
 
     evaluation_condition_list = ['afternoon', 'morning', 'overcast', 'night']
 
-    train_condition_list = [['afternoon'], ['afternoon', 'morning', 'overcast', 'night']]
+    train_condition_list = [['afternoon'], ['morning'], ['overcast'], ['night'], ['afternoon', 'morning', 'overcast', 'night']]
 
     # larger images require a resnet, downsampled can have a small custom DNN
     dataset_type = 'tiny_images'
