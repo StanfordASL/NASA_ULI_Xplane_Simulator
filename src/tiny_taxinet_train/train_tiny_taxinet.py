@@ -186,19 +186,8 @@ if __name__=='__main__':
     torch.cuda.empty_cache()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    print('found device: ', device)
-
-    condition_list = ['afternoon', 'morning', 'overcast', 'night']
-    #condition_list = ['afternoon']
-
-    condition_str = '_'.join(condition_list)
-
-    # where the training results should go
-    results_dir = remove_and_create_dir(SCRATCH_DIR + '/tiny_taxinet_DNN_train/' + condition_str + '/')
-
-    train_options = {"epochs": 100,
+    train_options = {"epochs": 200,
                      "learning_rate": 1e-3, 
-                     "results_dir": results_dir,
                      }
 
     dataloader_params = {'batch_size': 256,
@@ -207,37 +196,51 @@ if __name__=='__main__':
                          'drop_last': False,
                          'pin_memory': True}
 
-    # MODEL
-    # instantiate the model and freeze all but penultimate layers
-    model = TinyTaxiNetDNN()
+    print('found device: ', device)
 
-    # DATALOADERS
-    # instantiate the model and freeze all but penultimate layers
-    train_dataset, train_loader = tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, 'train', dataloader_params)
+    #condition_list = ['afternoon']
+    
+    experiment_list = [['afternoon'], ['morning'], ['overcast'], ['night'], ['afternoon', 'morning', 'overcast', 'night']]
 
-    val_dataset, val_loader = tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, 'validation', dataloader_params)
+    for condition_list in experiment_list:
+    
+        condition_str = '_'.join(condition_list)
+
+        # where the training results should go
+        results_dir = remove_and_create_dir(SCRATCH_DIR + '/tiny_taxinet_DNN_train/' + condition_str + '/')
 
 
-    # OPTIMIZER
-    optimizer = torch.optim.Adam(model.parameters(),
-                                 lr=train_options["learning_rate"],
-                                 amsgrad=True)
+        # MODEL
+        # instantiate the model and freeze all but penultimate layers
+        model = TinyTaxiNetDNN()
 
-    # LOSS FUNCTION
-    loss_func = torch.nn.MSELoss().to(device)
+        # DATALOADERS
+        # instantiate the model and freeze all but penultimate layers
+        train_dataset, train_loader = tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, 'train', dataloader_params)
 
-    # DATASET INFO
-    datasets = {}
-    datasets['train'] = train_dataset
-    datasets['val'] = val_dataset
+        val_dataset, val_loader = tiny_taxinet_prepare_dataloader(DATA_DIR, condition_list, 'validation', dataloader_params)
 
-    dataloaders = {}
-    dataloaders['train'] = train_loader
-    dataloaders['val'] = val_loader
 
-    # train the DNN
-    model = train_model(model, datasets, dataloaders, loss_func, optimizer, device, results_dir, num_epochs=train_options['epochs'], log_every=100)
+        # OPTIMIZER
+        optimizer = torch.optim.Adam(model.parameters(),
+                                     lr=train_options["learning_rate"],
+                                     amsgrad=True)
 
-    # save the best model to the directory
-    torch.save(model.state_dict(), results_dir + "/best_model.pt")
+        # LOSS FUNCTION
+        loss_func = torch.nn.MSELoss().to(device)
+
+        # DATASET INFO
+        datasets = {}
+        datasets['train'] = train_dataset
+        datasets['val'] = val_dataset
+
+        dataloaders = {}
+        dataloaders['train'] = train_loader
+        dataloaders['val'] = val_loader
+
+        # train the DNN
+        model = train_model(model, datasets, dataloaders, loss_func, optimizer, device, results_dir, num_epochs=train_options['epochs'], log_every=100)
+
+        # save the best model to the directory
+        torch.save(model.state_dict(), results_dir + "/best_model.pt")
 

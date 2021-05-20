@@ -1,3 +1,4 @@
+# NNET file format
 This is a small NN for the Tiny TaxiNet dataset of 8 x 16 images.
 
 The file format is described here:
@@ -19,4 +20,10 @@ Layer 2: 16
 Layer 3: 8
 Layer 4: 8
 Output: 2
+
+# Pytorch models
+
+`tiny_taxinet_pytorch/`
+
+These are pytorch models trained for 200 epochs of various conditions of the tiny taxinet data. For example, the model under `afternoon` was only trained with afternoon data etc.
 
