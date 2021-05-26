@@ -23,7 +23,7 @@ import numpy as np
 from tqdm.autonotebook import tqdm as tqdm
 from torch.utils.tensorboard import SummaryWriter
 
-from model_taxinet import TaxiNetDNN, freeze_model
+from model_taxinet import TaxiNetDNN, freeze_model, QuantTaxiNetDNN
 from taxinet_dataloader import *
 from plot_utils import *
 
@@ -182,16 +182,33 @@ if __name__=='__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     print('found device: ', device)
-
+    quantize = True
+    
     # condition
     condition = 'morning'
     # larger images require a resnet, downsampled can have a small custom DNN
     dataset_type = 'large_images'
 
-    model_name = 'resnet34'
+    model_name = 'resnet18'
+    #model_name = 'squeezenet'
+
+
+    if quantize:
+        device = torch.device("cpu")
+        # MODEL
+        # instantiate the model and freeze all but penultimate layers
+        model = QuantTaxiNetDNN()
+    else:
+        # MODEL
+        # instantiate the model and freeze all but penultimate layers
+        model = TaxiNetDNN(model_name=model_name, quantize=quantize)
+        model = freeze_model(model)
+
 
     # where the training results should go
-    results_dir = remove_and_create_dir(SCRATCH_DIR + '/DNN_train_taxinet_' + str(model_name) + '/')
+    fname = 'DNN_train_taxinet_' + str(model_name) + '_' + str(quantize)
+
+    results_dir = remove_and_create_dir(SCRATCH_DIR + '/' + fname + '/') 
 
     # where raw images and csvs are saved
     BASE_DATALOADER_DIR = DATA_DIR + '/' + dataset_type  + '/' + condition
@@ -211,10 +228,6 @@ if __name__=='__main__':
                          'num_workers': 12,
                          'drop_last': False}
 
-    # MODEL
-    # instantiate the model and freeze all but penultimate layers
-    model = TaxiNetDNN(model_name=model_name)
-    model = freeze_model(model)
 
     # DATALOADERS
     # instantiate the model and freeze all but penultimate layers

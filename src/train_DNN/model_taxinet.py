@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torchvision import models
+import torchvision.models.quantization as quant_models
 
 '''
 EfficientNet model as CNN feature extractor
@@ -12,14 +13,18 @@ Output:
 '''
 
 class TaxiNetDNN(nn.Module):
-    def __init__(self, model_name="resnet18"):
+    def __init__(self, model_name="resnet18", quantize=False):
         super(TaxiNetDNN, self).__init__()
         if model_name == 'resnet18':
             self.model = models.resnet18(pretrained=True)
         elif model_name == 'resnet34':
             self.model = models.resnet34(pretrained=True)
-        else:
-            pass
+        elif model_name == 'squeezenet':
+            self.model = models.squeezenet1_1(pretrained=True)
+
+        if quantize:
+            self.model = quant_models.resnet18(pretrained=True, quantize=True)
+
         y_dim = 2
         self.model.fc = nn.Linear(self.model.fc.in_features, y_dim)
         self.fc = self.model.fc
@@ -27,6 +32,44 @@ class TaxiNetDNN(nn.Module):
     def forward(self, z):
         out = self.model(z)
         return out
+
+def QuantTaxiNetDNN():
+    # You will need the number of filters in the `fc` for future use.
+    # Here the size of each output sample is set to 2.
+    # Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).
+    model_fe = quant_models.resnet18(pretrained=True, progress=True, quantize=True)
+    num_ftrs = model_fe.fc.in_features
+
+    # Step 1. Isolate the feature extractor.
+    model_fe_features = nn.Sequential(
+    model_fe.quant,  # Quantize the input
+    model_fe.conv1,
+    model_fe.bn1,
+    model_fe.relu,
+    model_fe.maxpool,
+    model_fe.layer1,
+    model_fe.layer2,
+    model_fe.layer3,
+    model_fe.layer4,
+    model_fe.avgpool,
+    model_fe.dequant,  # Dequantize the output
+    )
+
+    # Step 2. Create a new "head"
+    new_head = nn.Sequential(
+    nn.Linear(num_ftrs, 2),
+    )
+
+    # Step 3. Combine, and don't forget the quant stubs.
+    new_model = nn.Sequential(
+    model_fe_features,
+    nn.Flatten(1),
+    new_head,
+    )
+    
+    return new_model
+
+
 
 def freeze_model(model, freeze_frac=True):
     # freeze everything
@@ -48,3 +91,5 @@ def unfreeze_model(model):
     # unfreeze everything
     for p,v in zip( model.parameters(), og_req_grads):
         p.requires_grad = v
+
+
