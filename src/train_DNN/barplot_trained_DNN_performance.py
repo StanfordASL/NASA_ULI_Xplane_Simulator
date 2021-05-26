@@ -20,7 +20,8 @@ sns.set_theme(style="ticks", palette="pastel")
 if __name__ == '__main__':
 
     ###############################
-    results_dir = NASA_ULI_ROOT_DIR + '/pretrained_DNN/results/'
+    #results_dir = NASA_ULI_ROOT_DIR + '/pretrained_DNN/results/'
+    results_dir = NASA_ULI_ROOT_DIR + '/scratch/test_DNN_taxinet/'
 
     csv_fname = results_dir + '/results.txt'
 
