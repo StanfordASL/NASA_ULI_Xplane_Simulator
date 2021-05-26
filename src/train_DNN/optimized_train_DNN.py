@@ -216,7 +216,7 @@ if __name__=='__main__':
     train_dir = BASE_DATALOADER_DIR + '/' + condition + '_train'
     val_dir = BASE_DATALOADER_DIR + '/' + condition + '_validation'
 
-    train_options = {"epochs": 5,
+    train_options = {"epochs": 20,
                      "learning_rate": 1e-3, 
                      "results_dir": results_dir,
                      "train_dir": train_dir, 
