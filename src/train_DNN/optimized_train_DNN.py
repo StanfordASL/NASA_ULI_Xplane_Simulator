@@ -188,8 +188,10 @@ if __name__=='__main__':
     # larger images require a resnet, downsampled can have a small custom DNN
     dataset_type = 'large_images'
 
+    model_name = 'resnet34'
+
     # where the training results should go
-    results_dir = remove_and_create_dir(SCRATCH_DIR + '/DNN_train_taxinet/')
+    results_dir = remove_and_create_dir(SCRATCH_DIR + '/DNN_train_taxinet_' + str(model_name) + '/')
 
     # where raw images and csvs are saved
     BASE_DATALOADER_DIR = DATA_DIR + '/' + dataset_type  + '/' + condition
@@ -211,7 +213,7 @@ if __name__=='__main__':
 
     # MODEL
     # instantiate the model and freeze all but penultimate layers
-    model = TaxiNetDNN()
+    model = TaxiNetDNN(model_name=model_name)
     model = freeze_model(model)
 
     # DATALOADERS

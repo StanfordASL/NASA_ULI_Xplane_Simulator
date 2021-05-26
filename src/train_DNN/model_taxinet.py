@@ -12,9 +12,14 @@ Output:
 '''
 
 class TaxiNetDNN(nn.Module):
-    def __init__(self, model_name="efficientnet-b0"):
+    def __init__(self, model_name="resnet18"):
         super(TaxiNetDNN, self).__init__()
-        self.model = models.resnet18(pretrained=True)
+        if model_name == 'resnet18':
+            self.model = models.resnet18(pretrained=True)
+        elif model_name == 'resnet34':
+            self.model = models.resnet34(pretrained=True)
+        else:
+            pass
         y_dim = 2
         self.model.fc = nn.Linear(self.model.fc.in_features, y_dim)
         self.fc = self.model.fc
