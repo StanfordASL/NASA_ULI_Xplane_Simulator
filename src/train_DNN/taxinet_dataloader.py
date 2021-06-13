@@ -18,7 +18,7 @@ from PIL import Image
 # make sure this is a system variable in your bashrc
 NASA_ULI_ROOT_DIR=os.environ['NASA_ULI_ROOT_DIR']
 
-DATA_DIR = NASA_ULI_ROOT_DIR + '/data/'
+DATA_DIR = os.environ['NASA_DATA_DIR']
 
 # where intermediate results are saved
 # never save this to the main git repo
@@ -77,15 +77,16 @@ class TaxiNetDataset(torch.utils.data.Dataset):
         # get the corresponding state information (labels) for each image
         specific_row = self.labels_df[self.labels_df['image_filename'] == image_name]
         # there are many states of interest, you can modify to access which ones you want
-        dist_centerline_norm = specific_row['distance_to_centerline_NORMALIZED'].item()
+        dist_centerline_norm = specific_row['distance_to_centerline_meters'].item()
+
+        # normalized downtrack position
+        heading_error_norm = specific_row['heading_error_degrees'].item()
+
         # normalized downtrack position
         downtrack_position_norm = specific_row['downtrack_position_NORMALIZED'].item()
 
-        # normalized downtrack position
-        heading_error_norm = specific_row['downtrack_position_NORMALIZED'].item()
-
         # add tensor
-        target_tensor_list = [dist_centerline_norm, downtrack_position_norm]
+        target_tensor_list = [dist_centerline_norm, heading_error_norm, downtrack_position_norm]
 
         # concatenate all image tensors
         target_tensor = torch.tensor(target_tensor_list)
@@ -103,8 +104,7 @@ if __name__ == '__main__':
     remove_and_create_dir(visualization_dir)
 
     # where original XPLANE images are stored 
-    DATALOADER_DIR = DATA_DIR + '/test_dataset_smaller_ims/'
-    DATALOADER_DIR = DATA_DIR + '/medium_size_dataset/nominal_conditions_subset/'
+    DATALOADER_DIR = DATA_DIR + '/large_images/afternoon/afternoon_train/'
 
     taxinet_dataset = TaxiNetDataset(DATALOADER_DIR)
 

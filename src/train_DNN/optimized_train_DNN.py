@@ -182,8 +182,8 @@ if __name__=='__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     print('found device: ', device)
-    quantize = True
-    
+    quantize = False
+
     # condition
     condition = 'morning'
     # larger images require a resnet, downsampled can have a small custom DNN
@@ -223,9 +223,9 @@ if __name__=='__main__':
                      "val_dir": val_dir
                      }
 
-    dataloader_params = {'batch_size': 512,
+    dataloader_params = {'batch_size': 128,
                          'shuffle': True,
-                         'num_workers': 12,
+                         'num_workers': 4,
                          'drop_last': False}
 
 

@@ -13,7 +13,7 @@ Output:
 '''
 
 class TaxiNetDNN(nn.Module):
-    def __init__(self, model_name="resnet18", quantize=False):
+    def __init__(self, model_name="resnet18", quantize=False, y_dim=3):
         super(TaxiNetDNN, self).__init__()
         if model_name == 'resnet18':
             self.model = models.resnet18(pretrained=True)
@@ -25,7 +25,6 @@ class TaxiNetDNN(nn.Module):
         if quantize:
             self.model = quant_models.resnet18(pretrained=True, quantize=True)
 
-        y_dim = 2
         self.model.fc = nn.Linear(self.model.fc.in_features, y_dim)
         self.fc = self.model.fc
 
@@ -33,7 +32,7 @@ class TaxiNetDNN(nn.Module):
         out = self.model(z)
         return out
 
-def QuantTaxiNetDNN():
+def QuantTaxiNetDNN(y_dim=3):
     # You will need the number of filters in the `fc` for future use.
     # Here the size of each output sample is set to 2.
     # Alternatively, it can be generalized to nn.Linear(num_ftrs, len(class_names)).
@@ -57,7 +56,7 @@ def QuantTaxiNetDNN():
 
     # Step 2. Create a new "head"
     new_head = nn.Sequential(
-    nn.Linear(num_ftrs, 2),
+    nn.Linear(num_ftrs, y_dim),
     )
 
     # Step 3. Combine, and don't forget the quant stubs.
