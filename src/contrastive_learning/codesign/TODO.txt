@@ -1,0 +1,46 @@
+[x_target <--- x_robot]
+
+dataloader should have:
+
+    x_robot, v_robot, x_target, p_noisy, p_true
+
+    for supervised learning of perception:
+        p_true = x_robot - x_target
+
+        phat = DNN(x_robot, x_target)
+
+        # NOTE LOSS TAKES IN noisy outputs
+        loss(p_noisy, phat)
+
+    for MPC control:
+
+        phat = DNN(x_robot, x_target)
+
+        u_mpc, x_mpc, J_MPC = MPC(x_robot, v_robot, phat, MPC_weight_params) [A]
+
+        u_opt, x_opt, J_opt = MPC(x_robot, v_robot, p_true, MPC_weight_params) [B]
+
+        control_loss = mseloss(u_mpc, u_opt) + mseloss(x_mpc, x_opt)
+
+        # idea: 
+        control_loss = J_MPC - J_opt
+
+        backprop on control_loss()
+
+    what does MPC internally do:
+        assemble dynamics constraints
+
+        problem_vars: x_mpc, u_mpc
+        constraints: dynamics, depend on x_robot, v_robot [init conditions]
+        constraints: box constraints on u_mpc and x_mpc [optional]
+
+        x_target = x_robot - phat
+
+        J = gamma_x * L2norm(xtarget - x_mpc[-1]) +  gamma_u * L2norm(u_mpc) + gamma_penalty * RELU(x_target - x_mpc[-1])
+            - NOTE: change RELU, but keep it one sided [quadratic]
+
+
+
+
+
+
