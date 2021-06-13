@@ -31,7 +31,7 @@ from textfile_utils import *
 
 class TaxiNetDataset(torch.utils.data.Dataset):
   'Characterizes a dataset for PyTorch'
-  def __init__(self, dataloader_dir, num_expected_targets=2, IMAGE_WIDTH=224, IMAGE_HEIGHT=224):
+  def __init__(self, dataloader_dir, num_expected_targets=3, IMAGE_WIDTH=224, IMAGE_HEIGHT=224):
 
         'Initialization'
         # image data path and time series data loading
@@ -80,6 +80,9 @@ class TaxiNetDataset(torch.utils.data.Dataset):
         dist_centerline_norm = specific_row['distance_to_centerline_NORMALIZED'].item()
         # normalized downtrack position
         downtrack_position_norm = specific_row['downtrack_position_NORMALIZED'].item()
+
+        # normalized downtrack position
+        heading_error_norm = specific_row['downtrack_position_NORMALIZED'].item()
 
         # add tensor
         target_tensor_list = [dist_centerline_norm, downtrack_position_norm]
