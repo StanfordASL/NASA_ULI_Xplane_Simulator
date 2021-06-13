@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torchvision import models
-import torchvision.models.quantization as quant_models
+#import torchvision.models.quantization as quant_models
 
 '''
 EfficientNet model as CNN feature extractor

@@ -223,9 +223,9 @@ if __name__=='__main__':
                      "val_dir": val_dir
                      }
 
-    dataloader_params = {'batch_size': 128,
+    dataloader_params = {'batch_size': 256,
                          'shuffle': True,
-                         'num_workers': 4,
+                         'num_workers': 12,
                          'drop_last': False}
 
 
