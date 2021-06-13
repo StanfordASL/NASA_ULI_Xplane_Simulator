@@ -26,13 +26,15 @@ sys.path.append(UTILS_DIR)
 
 from textfile_utils import *
 
-def create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samples = 1000, bias = 0, noise_sigma = 0.5, print_mode = True):
+def create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samples = 1000, bias = 0, noise_sigma = 0.5, print_mode = True, params = None):
 
     x_lims = [x_target, x_target + max_x]
 
     # x_robot, x_target, p_true, p_noisy
-    num_cols = 4 
-    data_matrix = np.zeros([num_samples, num_cols])
+    num_features = 2
+    data_matrix_x = np.zeros([num_samples, num_features])
+    data_matrix_y = np.zeros([num_samples, 1])
+    data_matrix_y_true = np.zeros([num_samples, 1])
 
     for i in range(num_samples):
        
@@ -43,17 +45,35 @@ def create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samp
 
         p_noisy = np.random.normal(p_true + bias, scale=noise_sigma)
 
-        data_vector = [x_robot, x_target, p_true, p_noisy]
+        data_vector_x = [x_robot, x_target]
+        data_vector_y = [p_noisy]
+        data_vector_y_true = [p_true]
 
         if print_mode:
             print(data_vector)
 
-        data_matrix[i,:] = data_vector
+        data_matrix_x[i,:] = data_vector_x
+        data_matrix_y[i,:] = data_vector_y
+        data_matrix_y_true[i,:] = data_vector_y_true
 
-    return data_matrix
+    tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(data_matrix_x), torch.tensor(data_matrix_y), torch.tensor(data_matrix_y_true))
+
+    tensor_dataloader = torch.utils.data.DataLoader(tensor_dataset, **params)
+
+    return tensor_dataset, tensor_dataloader
 
 if __name__ == '__main__':
 
-    data_matrix = create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samples = 100, bias = 0, noise_sigma = 0.5, print_mode = True)
+    params = {'batch_size': 1,
+		  'shuffle': False,
+		  'num_workers': 1}
+
+
+    tensor_dataset, tensor_dataloader = create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samples = 100, bias = 1.0, noise_sigma = 0.5, print_mode = False, params = params)
+
+    for i, (x_vector, y_noisy , y_true) in enumerate(tensor_dataloader):
+        print('x: ', x_vector)
+        print('y_noisy: ', y_noisy)
+        print('y_true: ', y_true)
 
 
