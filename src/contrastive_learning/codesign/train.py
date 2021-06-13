@@ -77,7 +77,7 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                 # Iterate over data.
                 pbar2.refresh()
                 pbar2.reset(total=dataset_sizes[phase])
-                for x_vector, p_noisy, p_true, v_true in dataloaders[phase]:
+                for x_vector, p_noisy, p_true, v_robot in dataloaders[phase]:
                     if phase == 'train':
                         n_tr_batches_seen += 1
                     
@@ -92,11 +92,26 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                     with torch.set_grad_enabled(phase == 'train'):
                         outputs = model(x_vector)
 
-                        # loss
+                        # first, run TaskNet and get the predicted error and controls
+                        phat, u_mpc, x_mpc, J_mpc = model(x_vector, v_robot) 
+
+                        # get the optimal controls (for supervision only)
+                        u_opt, x_opt, J_opt = MPC(x_vector, v_robot, p_true)
+
+                        # always compute perception error
                         ####################
-                        loss = loss_func(outputs, p_noisy).mean()
+                        perception_loss = loss_func(phat, p_noisy)
                         ####################
-                        
+
+                        # compute control error as well
+                        control_loss = loss_func(u_mpc, u_opt) + loss_func(x_mpc, x_opt)
+
+                        # depending on mode, select which loss to use for optimization
+                        if perception_mode:
+                            loss = perception_loss
+                        else:
+                            loss = control_loss
+
                         # backward + optimize only if in training phase
                         if phase == 'train':
                             loss.backward()

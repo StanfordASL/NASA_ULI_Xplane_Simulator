@@ -75,6 +75,7 @@ if __name__ == '__main__':
 
     tensor_dataset, tensor_dataloader = create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samples = 100, bias = 1.0, noise_sigma = 0.5, print_mode = False, params = params)
 
+    # here x_vector = [x_robot, x_target]
     for i, (x_vector, p_noisy , p_true, v_true) in enumerate(tensor_dataloader):
         print('x: ', x_vector)
         print('y_noisy: ', p_noisy)

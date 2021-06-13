@@ -34,7 +34,7 @@ class TaskNet(nn.Module):
 
     def forward(self, x_vector, v_robot):
         x_robot = x_vector[:,0]
-        x_target = x_vector[:, 0]
+        x_target = x_vector[:, 1]
 
         phat = self.DNN(x_vector)
         u_mpc, x_mpc, J_mpc = self.MPC(x_robot, v_robot, phat)
