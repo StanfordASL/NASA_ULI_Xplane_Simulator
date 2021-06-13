@@ -29,11 +29,11 @@ from model import *
 from generate_synthetic_data import create_synthetic_perception_training_data
 
 
-def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, results_dir, num_epochs=25, log_every=100):
+def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, results_dir, perception_mode = False, num_epochs=25, log_every=100):
     """
-    Trains a model on datatsets['train'] using criterion(model(inputs), labels) as the loss.
+    Trains a model on datatsets['train'] using criterion(model(x_vector), p_noisy) as the loss.
     Returns the model with lowest loss on datasets['val']
-    Puts model and inputs on device.
+    Puts model and x_vector on device.
     Trains for num_epochs passes through both datasets.
     
     Writes tensorboard info to ./runs/ if given
@@ -77,12 +77,12 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                 # Iterate over data.
                 pbar2.refresh()
                 pbar2.reset(total=dataset_sizes[phase])
-                for inputs, labels, labels_true in dataloaders[phase]:
+                for x_vector, p_noisy, p_true, v_true in dataloaders[phase]:
                     if phase == 'train':
                         n_tr_batches_seen += 1
                     
-                    inputs = inputs.to(device)
-                    labels = labels.to(device)
+                    x_vector = x_vector.to(device)
+                    p_noisy = p_noisy.to(device)
 
                     # zero the parameter gradients
                     optimizer.zero_grad()
@@ -90,11 +90,11 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                     # forward
                     # track history if only in train
                     with torch.set_grad_enabled(phase == 'train'):
-                        outputs = model(inputs)
+                        outputs = model(x_vector)
 
                         # loss
                         ####################
-                        loss = loss_func(outputs, labels).mean()
+                        loss = loss_func(outputs, p_noisy).mean()
                         ####################
                         
                         # backward + optimize only if in training phase
@@ -103,11 +103,11 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                             optimizer.step()
 
                     # statistics
-                    running_loss += loss.item() * inputs.shape[0]
+                    running_loss += loss.item() * x_vector.shape[0]
                     
                     if phase =='train':
-                        running_n += inputs.shape[0]
-                        running_tr_loss += loss.item() * inputs.shape[0]
+                        running_n += x_vector.shape[0]
+                        running_tr_loss += loss.item() * x_vector.shape[0]
                         
                         if n_tr_batches_seen % log_every == 0:
                             mean_loss = running_tr_loss / running_n
@@ -118,7 +118,7 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                             running_n = 0
                     
                     pbar2.set_postfix(split=phase, batch_loss=loss.item())
-                    pbar2.update(inputs.shape[0])
+                    pbar2.update(x_vector.shape[0])
                     
 
                 
