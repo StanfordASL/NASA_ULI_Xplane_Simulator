@@ -68,7 +68,6 @@ if __name__ == '__main__':
 		  'shuffle': False,
 		  'num_workers': 1}
 
-
     tensor_dataset, tensor_dataloader = create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samples = 100, bias = 1.0, noise_sigma = 0.5, print_mode = False, params = params)
 
     for i, (x_vector, y_noisy , y_true) in enumerate(tensor_dataloader):
