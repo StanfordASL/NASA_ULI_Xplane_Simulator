@@ -29,7 +29,7 @@ from model import *
 from generate_synthetic_data import create_synthetic_perception_training_data
 
 
-def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, results_dir, perception_mode = False, num_epochs=25, log_every=100):
+def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, results_dir, codesign_mode = False, num_epochs=25, log_every=100):
     """
     Trains a model on datatsets['train'] using criterion(model(x_vector), p_noisy) as the loss.
     Returns the model with lowest loss on datasets['val']
@@ -119,10 +119,10 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                         control_loss = loss_func(u_mpc, u_opt) + loss_func(x_mpc, x_opt)
 
                         # depending on mode, select which loss to use for optimization
-                        if perception_mode:
-                            loss = perception_loss
-                        else:
+                        if codesign_mode:
                             loss = control_loss
+                        else:
+                            loss = perception_loss
 
                         # backward + optimize only if in training phase
                         if phase == 'train':
@@ -197,7 +197,7 @@ if __name__=='__main__':
     torch.cuda.empty_cache()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    train_options = {"epochs": 20,
+    train_options = {"epochs": 5,
                      "learning_rate": 1e-3,
                      }
 
@@ -211,43 +211,47 @@ if __name__=='__main__':
 
     # list of all the biases we have
     experiment_list = [0.0, 0.5, 1.0]
+    experiment_list = [0.5]
 
-    for bias in experiment_list:
+    codesign_mode_list = [True, False]
 
-        condition_str = 'bias-' + str(bias)
+    for codesign_mode in codesign_mode_list:
 
-        # where the training results should go
-        results_dir = remove_and_create_dir(SCRATCH_DIR + '/codesign/' + condition_str + '/')
+        for bias in experiment_list:
+            condition_str = '_'.join(['bias', str(bias), 'codesign', str(codesign_mode)])
 
-        # MODEL
-        # instantiate the model and freeze all but penultimate layers
-        model = TaskNet()
+            # where the training results should go
+            results_dir = remove_and_create_dir(SCRATCH_DIR + '/codesign/' + condition_str + '/')
 
-        # DATALOADERS
-        # instantiate the model and freeze all but penultimate layers
-        train_dataset, train_loader = create_synthetic_perception_training_data(num_samples = num_samples, bias = bias, print_mode = False, params = dataloader_params)
+            # MODEL
+            # instantiate the model and freeze all but penultimate layers
+            model = TaskNet()
 
-        val_dataset, val_loader = create_synthetic_perception_training_data(num_samples = num_samples, bias = bias, print_mode = False, params = dataloader_params)
+            # DATALOADERS
+            # instantiate the model and freeze all but penultimate layers
+            train_dataset, train_loader = create_synthetic_perception_training_data(num_samples = num_samples, bias = bias, print_mode = False, params = dataloader_params)
 
-        # OPTIMIZER
-        optimizer = torch.optim.Adam(model.parameters(),
-                                     lr=train_options["learning_rate"],
-                                     amsgrad=True)
+            val_dataset, val_loader = create_synthetic_perception_training_data(num_samples = num_samples, bias = bias, print_mode = False, params = dataloader_params)
 
-        # LOSS FUNCTION
-        loss_func = torch.nn.MSELoss().to(device)
+            # OPTIMIZER
+            optimizer = torch.optim.Adam(model.parameters(),
+                                         lr=train_options["learning_rate"],
+                                         amsgrad=True)
 
-        # DATASET INFO
-        datasets = {}
-        datasets['train'] = train_dataset
-        datasets['val'] = val_dataset
+            # LOSS FUNCTION
+            loss_func = torch.nn.MSELoss().to(device)
 
-        dataloaders = {}
-        dataloaders['train'] = train_loader
-        dataloaders['val'] = val_loader
+            # DATASET INFO
+            datasets = {}
+            datasets['train'] = train_dataset
+            datasets['val'] = val_dataset
 
-        # train the DNN
-        model = train_model(model, datasets, dataloaders, loss_func, optimizer, device, results_dir, num_epochs=train_options['epochs'], log_every=100)
+            dataloaders = {}
+            dataloaders['train'] = train_loader
+            dataloaders['val'] = val_loader
 
-        # save the best model to the directory
-        torch.save(model.state_dict(), results_dir + "/best_model.pt")
+            # train the DNN
+            model = train_model(model, datasets, dataloaders, loss_func, optimizer, device, results_dir, num_epochs=train_options['epochs'], log_every=100, codesign_mode = codesign_mode)
+
+            # save the best model to the directory
+            torch.save(model.state_dict(), results_dir + "/best_model.pt")
