@@ -35,28 +35,34 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
     Returns the model with lowest loss on datasets['val']
     Puts model and x_vector on device.
     Trains for num_epochs passes through both datasets.
-    
+
     Writes tensorboard info to ./runs/ if given
     """
     writer = None
     writer = SummaryWriter(log_dir=results_dir)
-        
+
     model = model.to(device)
-    
+
     since = time.time()
 
     dataset_sizes = {x: len(datasets[x]) for x in ['train', 'val']}
 
     best_model_wts = copy.deepcopy(model.state_dict())
     best_loss = np.inf
-    
+
     tr_loss = np.nan
     val_loss = np.nan
-    
+
     n_tr_batches_seen = 0
-   
+
     train_loss_vec = []
     val_loss_vec = []
+
+    # reference mpc
+    target_radius = 1.
+    obj_weights = (1.02, 5., 0.3)
+    ctrl_lims = [-15., 15.]
+    gt_MPC = create_target_landing_cvxpylayer(target_radius, obj_weights, ctrl_lims, n_dim=1, dt=0.1, N=15)
 
     with tqdm(total=num_epochs, position=0) as pbar:
         pbar2 = tqdm(total=dataset_sizes['train'], position=1)
@@ -73,16 +79,18 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                 running_tr_loss = 0.0 # used for logging
 
                 running_n = 0
-                
+
                 # Iterate over data.
                 pbar2.refresh()
                 pbar2.reset(total=dataset_sizes[phase])
                 for x_vector, p_noisy, p_true, v_robot in dataloaders[phase]:
                     if phase == 'train':
                         n_tr_batches_seen += 1
-                    
+
                     x_vector = x_vector.to(device)
                     p_noisy = p_noisy.to(device)
+                    p_true = p_true.to(device)
+                    v_robot = v_robot.to(device)
 
                     # zero the parameter gradients
                     optimizer.zero_grad()
@@ -90,13 +98,17 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                     # forward
                     # track history if only in train
                     with torch.set_grad_enabled(phase == 'train'):
-                        outputs = model(x_vector)
-
                         # first, run TaskNet and get the predicted error and controls
-                        phat, u_mpc, x_mpc, J_mpc = model(x_vector, v_robot) 
+                        phat, u_mpc, x_mpc = model(x_vector, v_robot)
 
                         # get the optimal controls (for supervision only)
-                        u_opt, x_opt, J_opt = MPC(x_vector, v_robot, p_true)
+                        with torch.no_grad():
+                            x_robot = x_vector[:,0].clone().detach()
+                            v_robot = v_robot.clone().detach()
+                            x_target_gt = x_vector[:, 1].clone().detach()
+                            x0 = torch.vstack([x_robot, v_robot.squeeze()]).T
+                            x_target_check = x_robot - p_true.squeeze()
+                            x_opt, u_opt = gt_MPC(x0, x_target_gt.unsqueeze(-1))
 
                         # always compute perception error
                         ####################
@@ -119,26 +131,26 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
 
                     # statistics
                     running_loss += loss.item() * x_vector.shape[0]
-                    
+
                     if phase =='train':
                         running_n += x_vector.shape[0]
                         running_tr_loss += loss.item() * x_vector.shape[0]
-                        
+
                         if n_tr_batches_seen % log_every == 0:
                             mean_loss = running_tr_loss / running_n
-                            
+
                             writer.add_scalar('loss/train', mean_loss, n_tr_batches_seen)
-                            
+
                             running_tr_loss = 0.
                             running_n = 0
-                    
+
                     pbar2.set_postfix(split=phase, batch_loss=loss.item())
                     pbar2.update(x_vector.shape[0])
-                    
 
-                
+
+
                 epoch_loss = running_loss / dataset_sizes[phase]
-                
+
                 if phase == 'train':
                     tr_loss = epoch_loss
                     train_loss_vec.append(tr_loss)
@@ -154,7 +166,7 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
                 if phase == 'val' and epoch_loss < best_loss:
                     best_loss = epoch_loss
                     best_model_wts = copy.deepcopy(model.state_dict())
-                    
+
             pbar.update(1)
 
             print(' ')
@@ -166,11 +178,11 @@ def train_model(model, datasets, dataloaders, dist_fam, optimizer, device, resul
     print('Training complete in {:.0f}m {:.0f}s'.format(
         time_elapsed // 60, time_elapsed % 60))
     print('Best val Loss: {:4f}'.format(best_loss))
-    
+
     writer.flush()
 
     # plot the results to a file
-    plot_file = results_dir + '/loss.pdf' 
+    plot_file = results_dir + '/loss.pdf'
     basic_plot_ts(train_loss_vec, val_loss_vec, plot_file, legend = ['Train Loss', 'Val Loss'])
 
     # load best model weights
@@ -186,7 +198,7 @@ if __name__=='__main__':
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     train_options = {"epochs": 20,
-                     "learning_rate": 1e-3, 
+                     "learning_rate": 1e-3,
                      }
 
     dataloader_params = {'batch_size': 32,
@@ -201,20 +213,20 @@ if __name__=='__main__':
     experiment_list = [0.0, 0.5, 1.0]
 
     for bias in experiment_list:
-    
+
         condition_str = 'bias-' + str(bias)
-        
+
         # where the training results should go
         results_dir = remove_and_create_dir(SCRATCH_DIR + '/codesign/' + condition_str + '/')
 
         # MODEL
         # instantiate the model and freeze all but penultimate layers
-        model = DNN()
+        model = TaskNet()
 
         # DATALOADERS
         # instantiate the model and freeze all but penultimate layers
         train_dataset, train_loader = create_synthetic_perception_training_data(num_samples = num_samples, bias = bias, print_mode = False, params = dataloader_params)
-        
+
         val_dataset, val_loader = create_synthetic_perception_training_data(num_samples = num_samples, bias = bias, print_mode = False, params = dataloader_params)
 
         # OPTIMIZER

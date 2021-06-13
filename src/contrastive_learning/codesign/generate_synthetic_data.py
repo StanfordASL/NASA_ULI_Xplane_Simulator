@@ -38,8 +38,8 @@ def create_synthetic_perception_training_data(x_target = 0, min_x = 5, max_x = 1
     data_matrix_v_true = np.zeros([num_samples, 1])
 
     for i in range(num_samples):
-      
-        v_robot = np.random.uniform(0, v_max)
+
+        v_robot = np.random.uniform(-v_max, v_max)
 
         # sample x_robot, ensure it is always greater than x_target
         x_robot = np.random.uniform(x_lims[0], x_lims[1])
@@ -81,5 +81,3 @@ if __name__ == '__main__':
         print('y_noisy: ', p_noisy)
         print('y_true: ', p_true)
         print('v_true: ', v_true)
-
-
