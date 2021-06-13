@@ -26,7 +26,7 @@ sys.path.append(UTILS_DIR)
 
 from textfile_utils import *
 
-def create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samples = 1000, bias = 0, noise_sigma = 0.5, print_mode = True, params = None):
+def create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samples = 1000, bias = 0, noise_sigma = 0.5, print_mode = True, params = None, dtype=torch.float32):
 
     x_lims = [x_target, x_target + max_x]
 
@@ -56,7 +56,7 @@ def create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samp
         data_matrix_y[i,:] = data_vector_y
         data_matrix_y_true[i,:] = data_vector_y_true
 
-    tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(data_matrix_x), torch.tensor(data_matrix_y), torch.tensor(data_matrix_y_true))
+    tensor_dataset = torch.utils.data.TensorDataset(torch.tensor(data_matrix_x, dtype=dtype), torch.tensor(data_matrix_y, dtype=dtype), torch.tensor(data_matrix_y_true, dtype=dtype))
 
     tensor_dataloader = torch.utils.data.DataLoader(tensor_dataset, **params)
 
@@ -70,9 +70,9 @@ if __name__ == '__main__':
 
     tensor_dataset, tensor_dataloader = create_synthetic_perception_training_data(x_target = 0, max_x = 10, num_samples = 100, bias = 1.0, noise_sigma = 0.5, print_mode = False, params = params)
 
-    for i, (x_vector, y_noisy , y_true) in enumerate(tensor_dataloader):
+    for i, (x_vector, p_noisy , p_true) in enumerate(tensor_dataloader):
         print('x: ', x_vector)
-        print('y_noisy: ', y_noisy)
-        print('y_true: ', y_true)
+        print('y_noisy: ', p_noisy)
+        print('y_true: ', p_true)
 
 
