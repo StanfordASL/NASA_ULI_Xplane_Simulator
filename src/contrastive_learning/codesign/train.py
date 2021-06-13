@@ -212,7 +212,6 @@ if __name__=='__main__':
     # list of all the biases we have
     experiment_list = [0.0, 0.5, 1.0]
     experiment_list = [0.5]
-
     codesign_mode_list = [True, False]
 
     for codesign_mode in codesign_mode_list:
