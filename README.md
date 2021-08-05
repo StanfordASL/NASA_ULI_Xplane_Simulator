@@ -4,6 +4,8 @@ Dataset and Simulator for the NASA ULI Project
 # Download Links, Citation, and Stanford Persistent URL
 Please see [here](https://purl.stanford.edu/zz143mb4347) for a citation and links to GBs of data, which you should download and place in `NASA_DATA_DIR` as specified below.
 
+For more information on the data, check out [this document](docs/NASA_ULI_dataset_format).
+
 # System Requirements
 First, export a system (bash) variable corresponding to where you have cloned this repo named `NASA_ULI_ROOT_DIR`. For example, in your bashrc:
 
