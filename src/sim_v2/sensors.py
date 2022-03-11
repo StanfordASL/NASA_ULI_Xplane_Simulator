@@ -29,8 +29,9 @@ class CameraSensor:
         self.save_filename = save_filename
         
     def sense(self):
-        img = cv2.cvtColor(np.array(self.screenshotter.grab(self.screenshotter.monitors[self.monitor_index])),cv2.COLOR_BGRA2BGR)[:, :, :]
-        img = cv2.resize(img, (self.width, self.height))
+        img = cv2.cvtColor(np.array(self.screenshotter.grab(self.screenshotter.monitors[self.monitor_index])),cv2.COLOR_BGRA2BGR)[:, :, ::-1]
+        img = img[530:, :, :]
+        img = cv2.resize(img, (self.width, self.height), interpolation=cv2.INTER_AREA)
 
         # For now, just save the image to an output directory
         if self.save:

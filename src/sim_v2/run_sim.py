@@ -27,7 +27,7 @@ def main():
         controller = OpenLoopController(client, XPC3_DIR+"/sim_v2/data/openloop_control.csv")
         holdline_detector = HoldLineDetector()
         GPS_sensor = GPSSensor(client, 0.0001, 0.0001, 0.0001)
-        camera_sensor = CameraSensor(64, 64, save_sample_screenshot=True, monitor_index=2)
+        camera_sensor = CameraSensor(64, 32, save_sample_screenshot=True, monitor_index=2)
         timer = Timer(client)
         agent = TaxiAgent(client, map, atc_listener, planner, controller, holdline_detector, GPS_sensor, camera_sensor, timer)
                 
