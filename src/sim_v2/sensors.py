@@ -12,9 +12,9 @@ class GPSSensor:
     def sense(self):
         # get the state
         s = self.client.getPOSI()
-        lat = s[1] + np.random.normal(0, self.noise_lat)
-        lon = s[2] + np.random.normal(0, self.noise_long)
-        alt = s[3] + np.random.normal(0, self.noise_alt)
+        lat = s[0] + np.random.normal(0, self.noise_lat)
+        lon = s[1] + np.random.normal(0, self.noise_long)
+        alt = s[2] + np.random.normal(0, self.noise_alt)
         
         return {"Latitude":lat, "Longitude":lon, "Altitude":alt}
         
