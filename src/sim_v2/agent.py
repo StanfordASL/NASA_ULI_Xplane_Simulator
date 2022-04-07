@@ -18,6 +18,7 @@ class TaxiAgent:
             
         self.belief = initial_belief
         self.atc = atc
+        self.idx = 0
     
     def process_atc(self):
         self.atc.message # TODO Process ATC commands
@@ -52,6 +53,9 @@ class TaxiAgent:
         
         # Act
         self.client.sendCTRL(control)
+
+        # Update timestep 
+        self.idx = self.idx + 1
         
         
         
