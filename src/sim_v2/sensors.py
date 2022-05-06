@@ -28,7 +28,7 @@ class CameraSensor:
         self.save = save_sample_screenshot
         self.save_filename = save_filename
         
-    def sense(self):
+    def sense(self, i=0):
         img = cv2.cvtColor(np.array(self.screenshotter.grab(self.screenshotter.monitors[self.monitor_index])),cv2.COLOR_BGRA2BGR)[:, :, ::-1]
         img = img[530:, :, :]
         img = cv2.resize(img, (self.width, self.height), interpolation=cv2.INTER_AREA)
@@ -36,6 +36,7 @@ class CameraSensor:
         # For now, just save the image to an output directory
         if self.save:
             cv2.imwrite(self.save_filename, img)
+            cv2.imwrite("images\\img" + str(i) + ".png", img)
         
         return img
 
@@ -46,4 +47,16 @@ class Timer:
     
     def time(self):
         return self.client.getDREF("sim/time/local_time_sec")[0] - self.t0
+
+class LocalSensor:
+    def __init__(self, client):
+        self.client = client
+
+    def sense(self):
+        x = self.client.get_local_x()
+        z = self.client.get_local_z()
+        heading = self.client.get_heading()
+        v = self.client.get_ground_speed()
+
+        return {"x" : x, "z" : z, "Heading" : heading, "Velocity" : v}
         
