@@ -5,6 +5,7 @@ from evaluator import *
 from poi_map import *
 from holdline_detector import *
 from openloop_controller import *
+from velocity_controller import *
 
 import sys
 import time
@@ -31,9 +32,10 @@ def main():
         map = POIMap(os.path.join(DATA_DIR, "grant_co_pois.csv"))
         atc_listener = ATCAgent(client)
         planner = FixedWaypointPlanner(os.path.join(DATA_DIR, "waypoints.csv"))
-        controller = OpenLoopController(client, os.path.join(DATA_DIR, "openloop_control.csv"))
+        # controller = OpenLoopController(client, os.path.join(DATA_DIR, "openloop_control.csv"))
+        controller = VelocityController(client, 10, 5)
         holdline_detector = HoldLineDetector()
-        GPS_sensor = GPSSensor(client, 0.0001, 0.0001, 0.0001)
+        GPS_sensor = GPSSensor(client, 0.0000, 0.0000, 0.0000)
         camera_sensor = CameraSensor(64, 32, save_sample_screenshot=True, monitor_index=2)
         timer = Timer(client)
         agent = TaxiAgent(client, map, atc_listener, planner, controller, holdline_detector, GPS_sensor, camera_sensor, timer)
