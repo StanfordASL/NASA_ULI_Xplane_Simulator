@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import mss
+from xpc3_helper import *
 
 class GPSSensor:
     def __init__(self, client, noise_lat, noise_long, noise_alt):
@@ -53,10 +54,10 @@ class LocalSensor:
         self.client = client
 
     def sense(self):
-        x = self.client.get_local_x()
-        z = self.client.get_local_z()
-        heading = self.client.get_heading()
-        v = self.client.get_ground_speed()
+        x = get_local_x(self.client)
+        z = get_local_z(self.client)
+        heading = get_heading(self.client)
+        v = get_ground_velocity(self.client)
 
         return {"x" : x, "z" : z, "Heading" : heading, "Velocity" : v}
         

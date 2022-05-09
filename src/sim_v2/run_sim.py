@@ -33,7 +33,7 @@ def main():
         atc_listener = ATCAgent(client)
         planner = FixedWaypointPlanner(os.path.join(DATA_DIR, "waypoints.csv"))
         # controller = OpenLoopController(client, os.path.join(DATA_DIR, "openloop_control.csv"))
-        controller = VelocityController(client, 10, 5)
+        controller = VelocityController(client, 10, 5) # Comment this out if you want the open-loop controller back
         holdline_detector = HoldLineDetector()
         GPS_sensor = GPSSensor(client, 0.0000, 0.0000, 0.0000)
         camera_sensor = CameraSensor(64, 32, save_sample_screenshot=True, monitor_index=2)
