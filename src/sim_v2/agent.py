@@ -32,6 +32,9 @@ class TaxiAgent:
         img = self.camera_sensor.sense()
         t = self.timer.time()
         
+        # Speed and heading
+        
+        
         
         obs = {**gps, "t" : t}
         self.update_belief(obs)
