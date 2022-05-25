@@ -20,6 +20,19 @@ Main.julia_file = "load_nn.jl"
 Main.eval("include(julia_file)")
 
 import xpc3
+client = xpc3.XPlaneConnect()
+
+client.pauseSim(True)
+
+s = client.getPOSI()
+lat = s[0]
+lon = s[1]
+heading = s[5]
+
+lat
+lon
+heading
+
 
 def main():
     with xpc3.XPlaneConnect() as client:
