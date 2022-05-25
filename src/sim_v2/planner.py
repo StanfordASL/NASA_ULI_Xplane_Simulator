@@ -1,5 +1,5 @@
 import pandas
-from scipy.interpolate import interp1d
+from scipy.interpolate import interp1d, splprep
 import csv
 
 class Trajectory:
@@ -100,16 +100,30 @@ class GraphPlanner:
         
         return Trajectory(lat_interp, lon_interp, heading_interp)
 
-# g = GraphPlanner("src/sim_v2/data/grant_co_map.csv")
-# g.graph[0].desc
+# g = GraphPlanner("data/grant_co_map.csv")
 # 
+# coords = g.get_coords(range(len(g.graph)))
+# g.write_route_csv(range(len(g.graph)), "data/all_pts.csv")
+# 
+# # g.graph[0].desc
+# # 
 # start = g.get_node_by_desc("Gate 3")
 # to = g.get_node_by_desc("4 takeoff")
+# to = g.get_node_by_desc("32L takeoff")
+# to = g.get_node_by_desc("14L takeoff")
 # 
 # route = g.get_route(start, to)
 # 
-# g.write_route_csv(rt, "data/test_tr.csv")
+# g.write_route_csv(route, "data/14Lto.csv")
 # 
 # traj = g.get_trajectory(route)
 # 
-# g.write_coords_csv([traj(u) for u in np.linspace(0,1,100)], "data/dense_tr.csv")
+# g.write_coords_csv([traj(u)[:2] for u in np.linspace(0,1,300)], "data/dense_tr.csv")
+
+
+class FixedWaypointPlanner:
+    def __init__(self, filename):
+        self.waypoints = pandas.read_csv(filename)
+        
+    def get_waypoints(self, map, belief, distance_to_holdline):
+        return self.waypoints
