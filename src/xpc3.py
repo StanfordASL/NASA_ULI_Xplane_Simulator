@@ -1,5 +1,6 @@
 import socket
 import struct
+import math
 
 
 class XPlaneConnect(object):

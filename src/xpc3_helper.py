@@ -3,6 +3,7 @@
 # Maintained by Sydney Katz (smkatz@stanford.edu)
 
 import numpy as np
+import math
 import xpc3
 import time
 import pandas as pd
@@ -325,3 +326,154 @@ def loadState(client, folder, filename='test.csv'):
     ctrl[3]*=3
     client.sendCTRL(ctrl)
     time.sleep(0.05)
+
+# Utilities for getting common DREFs
+def get_local_x(client):
+    """
+    Get the value of the aircraft's x-position in local coordinates
+    """
+    return client.getDREF("sim/flightmodel/position/local_x")[0]
+
+def get_local_y(client):
+    """
+    Get the value of the aircraft's y-position in local coordinates
+    """
+    return client.getDREF("sim/flightmodel/position/local_y")[0]
+
+def get_local_z(client):
+    """
+    Get the value of the aircraft's z-position in local coordinates
+    """
+    return client.getDREF("sim/flightmodel/position/local_z")[0]
+
+def get_local_vx(client):
+    """
+    Get the value of the aircraft's x-velocity in local coordinates
+    """
+    return client.getDREF("sim/flightmodel/position/local_vx")[0]
+
+def get_local_vy(client):
+    """
+    Get the value of the aircraft's y-velocity in local coordinates
+    """
+    return client.getDREF("sim/flightmodel/position/local_vy")[0]
+
+def get_local_vz(client):
+    """
+    Get the value of the aircraft's z-velocity in local coordinates
+    """
+    return client.getDREF("sim/flightmodel/position/local_vz")[0]
+
+
+def get_heading(client):
+    """
+    Get the value of the aircraft's heading in degrees from the Z axis
+    """
+    return client.getDREF("sim/flightmodel/position/psi")[0]
+
+def get_ground_velocity(client):
+    return client.getDREF("sim/flightmodel/position/groundspeed")
+
+# Utilities for sending common DREFs
+def send_local_x(client, x):
+    """
+    Set the value of the aircraft's x-position in local coordinates
+    """
+    return client.sendDREF("sim/flightmodel/position/local_x", x)
+
+def send_local_y(client, y):
+    """
+    Set the value of the aircraft's y-position in local coordinates
+    """
+    return client.sendDREF("sim/flightmodel/position/local_y", y)
+
+def send_local_z(client, z):
+    """
+    Set the value of the aircraft's z-position in local coordinates
+    """
+    return client.sendDREF("sim/flightmodel/position/local_z", z)
+
+def send_local_vx(client, vx):
+    """
+    Set the value of the aircraft's x-velocity in local coordinates
+    """
+    return client.sendDREF("sim/flightmodel/position/local_vx", vx)
+
+def send_local_vy(client, vy):
+    """
+    Set the value of the aircraft's y-velocity in local coordinates
+    """
+    return client.sendDREF("sim/flightmodel/position/local_vy", vy)
+
+def send_local_vz(client, vz):
+    """
+    Set the value of the aircraft's z-velocity in local coordinates
+    """
+    return client.sendDREF("sim/flightmodel/position/local_vz", vz)
+
+def send_heading(client, psi):
+    """
+    Set the value of the aircraft's heading in degrees from the Z axis
+    """
+    return client.sendDREF("sim/flightmodel/position/psi", psi)
+
+def send_true_heading(client, psi):
+    p = [-998, -998, -998, -998, -998, psi, -998]
+    return client.sendPOSI(p)
+
+def send_ground_velocity(client, v):
+    """
+    """
+    psi = get_heading(client) * (math.pi/180)
+    vx = v*math.sin(psi)
+    vz = -v*math.cos(psi)
+
+    return client.sendDREFs(["sim/flightmodel/position/local_vx", "sim/flightmodel/position/local_vz"], [vx, vz])
+
+def send_throttle(client, a):
+    return client.sendCTRL([0, 0, 0, a])
+
+
+# Utilities for shifting current values to new ones
+def shift_local_x(client, dx):
+    """
+    Shift the value of the aircraft's x-position in local coordinates
+    """
+    x = get_local_x(client)
+    return client.sendDREF("sim/flightmodel/position/local_x", x + dx)
+
+def shift_local_y(client, dy):
+    """
+    Shift the value of the aircraft's y-position in local coordinates
+    """
+    y = get_local_y(client)
+    return client.sendDREF("sim/flightmodel/position/local_y", y + dy)
+
+def shift_local_z(client, dz):
+    """
+    Shift the value of the aircraft's z-position in local coordinates
+    """
+    z = get_local_z(client)
+    return client.sendDREF("sim/flightmodel/position/local_z", z + dz)
+
+def shift_heading(client, dpsi):
+    """
+    Shift the value of the aircraft's heading in local coordinates
+    """
+    psi = get_heading(client)
+    return client.send_heading(psi + dpsi)
+
+def shift_true_heading(client, dpsi):
+    psi = client.getPOSI()[5]
+    return client.send_true_heading(psi + dpsi)
+
+def shift_forward(client, d):
+    x = get_local_x(client)
+    z = get_local_z(client)
+    psi = get_heading(client) * (math.pi/180)
+    dx = d*math.sin(psi)
+    dz = -d*math.cos(psi)
+
+    return client.sendDREFs(["sim/flightmodel/position/local_x", "sim/flightmodel/position/local_z"], [x + dx, z + dz])
+
+

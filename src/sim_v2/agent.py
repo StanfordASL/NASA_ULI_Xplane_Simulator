@@ -37,7 +37,7 @@ class TaxiAgent:
     def step(self):
         # Sense
         gps = self.GPS_sensor.sense()
-        img = self.camera_sensor.sense()
+        img = self.camera_sensor.sense(self.idx)
         t = self.timer.time()
         
         # Speed and heading
