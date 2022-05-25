@@ -19,21 +19,6 @@ from julia import Main
 Main.julia_file = "load_nn.jl"
 Main.eval("include(julia_file)")
 
-import xpc3
-client = xpc3.XPlaneConnect()
-
-client.pauseSim(True)
-
-s = client.getPOSI()
-lat = s[0]
-lon = s[1]
-heading = s[5]
-
-lat
-lon
-heading
-
-
 def main():
     with xpc3.XPlaneConnect() as client:
         client.sendDREF("sim/flightmodel/controls/parkbrake", False)
@@ -44,13 +29,15 @@ def main():
         map = POIMap(os.path.join(DATA_DIR, "grant_co_pois.csv"))
         atc_listener = ATCAgent(client)
         planner = FixedWaypointPlanner(os.path.join(DATA_DIR, "waypoints.csv"))
+        
         controller = OpenLoopController(client, os.path.join(DATA_DIR, "openloop_control.csv"))
         holdline_detector = HoldLineDetector()
         GPS_sensor = GPSSensor(client, 0.0001, 0.0001, 0.0001)
         camera_sensor = CameraSensor(64, 32, save_sample_screenshot=True, monitor_index=2)
         timer = Timer(client)
         agent = TaxiAgent(client, map, atc_listener, planner, controller, holdline_detector, GPS_sensor, camera_sensor, timer)
-                
+        
+        agent.set_route("Gate 3", "4 takeoff")
     
         # Construct the evaluator
         evaluator = Evaluator(client)

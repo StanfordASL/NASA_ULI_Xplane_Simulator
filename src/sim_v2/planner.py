@@ -1,14 +1,15 @@
 import pandas
-from scipy.interpolate import splprep, splev
+from scipy.interpolate import interp1d
 import csv
 
 class Trajectory:
-    def __init__(self, tck):
-        self.tck=tck
+    def __init__(self, lat, lon, heading):
+        self.lat=lat
+        self.lon=lon
+        self.heading=heading
         
     def __call__(self, u):
-        pt = splev([u], tck)
-        return [pt[0][0], pt[1][0]]
+        return [self.lat(u), self.lon(u), self.heading(u)]
         
 
 class Node:
@@ -87,41 +88,28 @@ class GraphPlanner:
                 return n
         raise Exception("No node with name " + name)
         
-    def get_trajectory(self, route, k=3):
-        coords = self.get_coords(route)
-        lats = [c[0] for c in coords]
-        lons = [c[1] for c in coords]
-        lats = (lats - mean(lats)) / (maximum(lats) - minimum(lats))
-        tck, u = splprep([, ], s=0, k=5)
-        return Trajectory(tck)
+    def get_trajectory(self, route, interp='linear'):
+        lats = [self[n].lat for n in route]
+        lons = [self[n].lon for n in route]
+        headings = [self[n].head for n in route]
+        tck, u = splprep([lats, lons])
+        
+        lat_interp = interp1d(u, lats, kind=interp)
+        lon_interp = interp1d(u, lons, kind=interp)
+        heading_interp = interp1d(u, headings, kind=interp)
+        
+        return Trajectory(lat_interp, lon_interp, heading_interp)
 
-g = GraphPlanner("data/grant_co_map.csv")
-g.graph[0].desc
-
-start = g.get_node_by_desc("Gate 3")
-to = g.get_node_by_desc("4 takeoff")
-
-rt = g.get_route(start, to)
-
-g.write_route_csv(rt, "data/test_tr.csv")
-
-traj = g.get_trajectory(rt, k=1)
-
-coords = g.get_coords(rt)
-lats = [c[0] for c in coords]
-lons = [c[1] for c in coords]
-# lats = (lats - np.mean(lats)) / (np.max(lats) - np.min(lats))
-# lons = (lons - np.mean(lons)) / (np.max(lons) - np.min(lons))
-tck, u = splprep([lats, lons], s=0, k=2)
-traj = Trajectory(tck)
-
-import matplotlib.pyplot as plt
-plt.figure()
-us = np.linspace(0,1,100)
-lats = [traj(u)[0] for u in us]
-lons = [traj(u)[1] for u in us]
-
-plt.plot([c[0] for c in coords], [c[1] for c in coords], 'x', lats, lons, 'r-')
-fig
-
-g.write_coords_csv([traj(u) for u in np.linspace(0,1,100)], "data/dense_tr.csv")
+# g = GraphPlanner("src/sim_v2/data/grant_co_map.csv")
+# g.graph[0].desc
+# 
+# start = g.get_node_by_desc("Gate 3")
+# to = g.get_node_by_desc("4 takeoff")
+# 
+# route = g.get_route(start, to)
+# 
+# g.write_route_csv(rt, "data/test_tr.csv")
+# 
+# traj = g.get_trajectory(route)
+# 
+# g.write_coords_csv([traj(u) for u in np.linspace(0,1,100)], "data/dense_tr.csv")
