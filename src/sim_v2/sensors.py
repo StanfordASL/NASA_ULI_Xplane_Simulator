@@ -1,7 +1,13 @@
 import numpy as np
 import cv2
 import mss
-from xpc3_helper import *
+import sys
+import time
+import os
+
+NASA_ULI_ROOT_DIR = os.environ['NASA_ULI_ROOT_DIR']
+XPC3_DIR = os.path.join(NASA_ULI_ROOT_DIR, "src")
+sys.path.append(XPC3_DIR)
 
 class GPSSensor:
     def __init__(self, client, noise_lat, noise_long, noise_alt):
@@ -25,19 +31,19 @@ class CameraSensor:
         self.width = width
         self.height = height
         self.screenshotter = mss.mss()
-        self.monitor_index = 0
+        self.monitor_index = monitor_index
         self.save = save_sample_screenshot
         self.save_filename = save_filename
         
     def sense(self, i=0):
-        img = cv2.cvtColor(np.array(self.screenshotter.grab(self.screenshotter.monitors[self.monitor_index])),cv2.COLOR_BGRA2BGR)[:, :, ::-1]
+        img = cv2.cvtColor(np.array(self.screenshotter.grab(self.screenshotter.monitors[self.monitor_index])), cv2.COLOR_BGRA2BGR)[:, :, ::-1]
         img = img[530:, :, :]
         img = cv2.resize(img, (self.width, self.height), interpolation=cv2.INTER_AREA)
 
         # For now, just save the image to an output directory
         if self.save:
             cv2.imwrite(self.save_filename, img)
-            cv2.imwrite("images\\img" + str(i) + ".png", img)
+            cv2.imwrite("data\\images\\img" + str(i) + ".png", img)
         
         return img
 
