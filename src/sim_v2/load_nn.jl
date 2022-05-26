@@ -3,7 +3,7 @@ using Flux
 using BSON: @load
 
 ## Load in trained NN - will need to change this depending on where you run these scripts from
-@load "..\\..\\models\\hold_network.bson" m
+@load joinpath("..", "..", "models", "hold_network.bson") m
 
 ## Define forward function for NN
 function forward(m, x)
