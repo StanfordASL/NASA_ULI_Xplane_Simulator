@@ -4,3 +4,7 @@
 *NOTES*
 src/*NOTES*
 data/*
+src/sim_v2/data/images/*
+../HoldlineImages/*
+src/sim_v2/sim_log.csv
+src/sim_v2/test.png
