@@ -1,14 +1,24 @@
 import numpy as np
-import julia
-from julia import Main
+import os
+import torch
+from hold_network import *
 
 class HoldLineDetector:
-    def __init__(self):
-        None # TODO
+    def __init__(self, saved_weights, img_channels=3, img_height=32, img_width=64):
+        self.channels = img_channels
+        self.height = img_height
+        self.width = img_width
+
+        # Instantiate holdline network
+        model = HoldlineNetwork()
+        model.load_state_dict(torch.load(saved_weights))
+        model.eval()
+        self.model = model
         
     def get_distance(self, img):
-        img2 = np.zeros((32, 64, 3, 1))
-        img2[:,:,:,0] = img
-        Main.x = img2
-        out = Main.eval("forward(m, x)")
-        return out[0] 
+        X = torch.zeros(1, self.channels, self.height, self.width)
+        X[0,:,:,:] = torch.tensor(img).reshape((self.channels, self.height, self.width)).float()
+        mu, sigma = self.model(X)
+        y = mu.detach().numpy()[0]
+
+        return y 

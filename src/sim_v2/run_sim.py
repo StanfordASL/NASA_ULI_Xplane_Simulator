@@ -17,12 +17,6 @@ sys.path.append(XPC3_DIR)
  
 import xpc3
 
-# Import julia stuff to access trained neural network
-import julia
-from julia import Main
-Main.julia_file = "load_nn.jl"
-Main.eval("include(julia_file)")
-
 # set the route
 route_start = "Gate 3"
 route_goal = "4 takeoff"
@@ -38,9 +32,9 @@ def main():
         atc_listener = ATCAgent(client)
         planner = GraphPlanner(os.path.join(DATA_DIR, "grant_co_map.csv"))
         controller = TeleportController(client, 100)
-        holdline_detector = HoldLineDetector()
+        holdline_detector = HoldLineDetector(os.path.join(DATA_DIR, "model_weights.pth"))
         GPS_sensor = GPSSensor(client, 0.0000, 0.0000, 0.0000)
-        camera_sensor = CameraSensor(64, 32, save_sample_screenshot=True, monitor_index=2)
+        camera_sensor = CameraSensor(64, 32, save_sample_screenshot=True, monitor_index=0)
         timer = Timer(client)
         agent = TaxiAgent(client, map, atc_listener, planner, controller, holdline_detector, GPS_sensor, camera_sensor, timer)
         
