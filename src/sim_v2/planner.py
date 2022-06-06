@@ -2,6 +2,8 @@ import pandas
 from scipy.interpolate import interp1d, splprep
 import csv
 
+from utils import spline_trajectories
+
 class Trajectory:
     def __init__(self, lat, lon, heading):
         self.lat=lat
@@ -28,9 +30,11 @@ class Node:
         
         
 class GraphPlanner:
-    def __init__(self, graphfile):
+    def __init__(self, coordinate_converter, graphfile, interp='linear'):
+        self.coordinate_converter = coordinate_converter
         df = pandas.read_csv(graphfile)
         self.graph = [Node(df.iloc[i]) for i in range(len(df))]
+        self.interp = interp
         
     def __getitem__(self, index):
         return self.graph[index]
@@ -88,15 +92,18 @@ class GraphPlanner:
                 return n
         raise Exception("No node with name " + name)
         
-    def get_trajectory(self, route, interp='linear'):
+    def get_trajectory(self, route):
         lats = [self[n].lat for n in route]
         lons = [self[n].lon for n in route]
+        if self.interp == "spline":
+            return spline_trajectories.Trajectory(self.coordinate_converter, lats, lons)
+
         headings = [self[n].head for n in route]
         tck, u = splprep([lats, lons])
         
-        lat_interp = interp1d(u, lats, kind=interp)
-        lon_interp = interp1d(u, lons, kind=interp)
-        heading_interp = interp1d(u, headings, kind=interp)
+        lat_interp = interp1d(u, lats, kind=self.interp)
+        lon_interp = interp1d(u, lons, kind=self.interp)
+        heading_interp = interp1d(u, headings, kind=self.interp)
         
         return Trajectory(lat_interp, lon_interp, heading_interp)
 

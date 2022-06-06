@@ -5,8 +5,10 @@ from evaluator import *
 from poi_map import *
 from holdline_detector import *
 from trivial_controllers import *
+from lookahead_controller import LookaheadController
 from planner import *
 from velocity_controller import *
+from utils import gps
 
 import sys
 import time
@@ -24,14 +26,17 @@ route_goal = "4 takeoff"
 def main():
     with xpc3.XPlaneConnect() as client:
         client.sendDREF("sim/flightmodel/controls/parkbrake", False)
+        coordinate_converter = gps.CoordinateConverter.from_sim(client)
         time.sleep(2.0)
         
         # Construct the agent
         DATA_DIR = os.path.join(XPC3_DIR, "sim_v2", "data")
         map = POIMap(os.path.join(DATA_DIR, "grant_co_pois.csv"))
         atc_listener = ATCAgent(client)
-        planner = GraphPlanner(os.path.join(DATA_DIR, "grant_co_map.csv"))
+        planner = GraphPlanner(coordinate_converter, os.path.join(DATA_DIR, "grant_co_map.csv"), interp="linear")
         controller = TeleportController(client, 100)
+        # planner = GraphPlanner(coordinate_converter, os.path.join(DATA_DIR, "grant_co_map.csv"), interp="spline")
+        # controller = LookaheadController(client)
         holdline_detector = HoldLineDetector(os.path.join(DATA_DIR, "model_weights.pth"))
         GPS_sensor = GPSSensor(client, 0.0000, 0.0000, 0.0000)
         camera_sensor = CameraSensor(64, 32, save_sample_screenshot=True, monitor_index=0)
