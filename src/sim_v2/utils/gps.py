@@ -140,4 +140,4 @@ class CoordinateConverter:
         return lla2enu(self.llaRef, (*ll, self.llaRef[-1]), self.np)[:2]
 
     def en2ll(self, en):
-        return enu2lla(self.llaRef, (*en, 0), self.np)
+        return enu2lla(self.llaRef, (*en, 0), self.np)[:2]

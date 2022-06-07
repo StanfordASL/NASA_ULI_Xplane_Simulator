@@ -202,7 +202,7 @@ class XPlaneControl(NamedTuple):
     speedbrakes: float = 0.0
 
     def to_taxi_control(self):
-        return TaxiControl(self.parkbrake, self.aileron, self.throttle)
+        return TaxiControl(self.parkbrake, -self.aileron, self.throttle)
 
     @classmethod
     def get_from_sim(cls, client):
@@ -219,7 +219,7 @@ class TaxiControl(NamedTuple):
     throttle: float
 
     def to_xplane_control(self):
-        aileron = np.clip(self.steering, -1, 1)
+        aileron = -np.clip(self.steering, -1, 1)
         return XPlaneControl(self.parkbrake, 0, aileron, aileron / 5, self.throttle)
 
     @classmethod
@@ -228,61 +228,3 @@ class TaxiControl(NamedTuple):
 
     def send_to_sim(self, client):
         self.to_xplane_control().send_to_sim(client)
-
-
-@dataclasses.dataclass
-class EngineDREFs(DREFs):
-    acf_num_engines: float
-    acf_auto_featherEQ: float
-    acf_prop_fail_mode: float
-    acf_throtmax_FWD: float
-    acf_throtmax_REV: float
-    acf_RSC_mingov_eng: float
-    acf_RSC_idlespeed_eng: float
-    acf_RSC_redline_eng: float
-    acf_RSC_mingreen_eng: float
-    acf_RSC_maxgreen_eng: float
-    acf_pmax: float
-    acf_tmax: float
-    acf_burnerinc: float
-    acf_critalt: float
-    acf_mpmax: float
-    acf_gear_rat: float
-    acf_face_jet: float
-    acf_face_rocket: float
-    acf_spooltime_jet: float
-    acf_spooltime_prop: float
-    acf_spooltime_turbine: float
-    acf_fuel_intro_time_prop: float
-    fuel_intro_time_jet: float
-    acf_max_mach_eff: float
-    acf_fmax_sl: float
-    acf_fmax_opt: float
-    acf_fmax_vac: float
-    acf_h_opt: float
-    aacf_tip_mach_des_50: float
-    aacf_tip_mach_des_100: float
-    aacf_rotor_mi_rat: float
-    aacf_tip_weight: float
-    acf_max_ITT: float
-    acf_max_EGT: float
-    acf_max_CHT: float
-    acf_max_OILP: float
-    acf_max_OILT: float
-    acf_oilT_is_C: float
-    acf_ITT_is_C: float
-    acf_EGT_is_C: float
-    acf_CHT_is_C: float
-    acf_max_FUELP: float
-    acf_starter_torque_ratio: float
-    acf_starter_max_rpm_ratio: float
-    boost_ratio: float
-    boost_max_seconds: float
-    acf_APU_door_time: float
-    acf_APU_cooldown_time: float
-    acf_APU_spoolup_time: float
-    acf_APU_spooldn_time: float
-
-    @staticmethod
-    def DREF_prefix():
-        return "sim/aircraft/engine/"
